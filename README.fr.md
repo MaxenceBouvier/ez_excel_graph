@@ -211,17 +211,21 @@ Claude Code vous invitera généralement à vous connecter automatiquement au pr
 
 **Configurer VSCode :**
 
+**Partie A : Installer VSCode et les Extensions (sur Windows)**
+
 1. **Installer VSCode sur Windows** depuis https://code.visualstudio.com/
 
-2. **Installer l'extension Remote-WSL**
-   - Ouvrir VSCode
+2. **Installer l'extension Remote-WSL** (nécessaire pour connecter VSCode à votre environnement Ubuntu WSL)
+   - Ouvrir VSCode sur Windows
    - Aller dans Extensions (Ctrl+Shift+X)
    - Rechercher "Remote - WSL"
-   - L'installer
+   - Cliquer sur Installer
 
    ![Extension WSL dans le Marketplace VSCode](docs/images/vscode-remote-wsl-extension.png)
 
-3. **Installer l'extension Claude Code**
+   **Important :** Cette extension est essentielle - sans elle, VSCode ne peut pas se connecter à votre environnement Ubuntu WSL.
+
+3. **Installer l'extension Claude Code** (optionnel mais fortement recommandé)
    - Dans VSCode, aller dans Extensions (Ctrl+Shift+X)
    - Rechercher "Claude Code" (publié par Anthropic)
    - Cliquer sur Installer
@@ -229,7 +233,23 @@ Claude Code vous invitera généralement à vous connecter automatiquement au pr
 
    ![Extension Claude Code](docs/images/claude-extension-logo.png)
 
-4. **Ouvrir le projet depuis le terminal WSL**
+**Partie B : Ouvrir Votre Projet depuis le Terminal Ubuntu**
+
+4. **Retourner dans votre terminal Ubuntu** (le terminal WSL où vous avez travaillé)
+
+5. **Vérifier que vous êtes dans le bon répertoire :**
+   ```bash
+   pwd
+   ```
+
+   Cela devrait retourner : `/home/votre-nom-utilisateur/proj/excel_to_graph`
+
+   Si ce n'est pas le cas, naviguez vers le projet :
+   ```bash
+   cd ~/proj/excel_to_graph
+   ```
+
+6. **Ouvrir VSCode connecté à WSL :**
    ```bash
    code .
    ```
