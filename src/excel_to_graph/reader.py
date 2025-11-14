@@ -41,7 +41,9 @@ class ExcelReader:
         """
         # Read all sheets with proper encoding
         self.workbook_data = pd.read_excel(
-            self.file_path, sheet_name=None, engine="openpyxl"  # Load all sheets
+            self.file_path,
+            sheet_name=None,
+            engine="openpyxl",  # Load all sheets
         )
         self.sheet_names = list(self.workbook_data.keys())
         return self.workbook_data
