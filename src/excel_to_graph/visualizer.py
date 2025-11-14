@@ -1,8 +1,8 @@
 """
-Graph visualization module for timeline data.
+Graph visualization module for Excel data.
 
 This module creates various types of visualizations using matplotlib and plotly,
-with proper support for French text and accents.
+with proper support for international characters (French accents, etc.).
 """
 
 import pandas as pd
@@ -14,16 +14,18 @@ from pathlib import Path
 from typing import Optional, List, Literal
 import seaborn as sns
 
-# Set matplotlib to use a font that supports French characters
+# Set matplotlib to use a font that supports international characters
 matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 matplotlib.rcParams['axes.unicode_minus'] = False
 
 
 class GraphVisualizer:
     """
-    Create visualizations from timeline data.
+    Create visualizations from DataFrame data.
 
-    Supports multiple output formats: PNG, PDF, HTML (interactive)
+    Supports multiple output formats: PNG, PDF, HTML (interactive).
+    Works with any DataFrame structure - some visualization methods
+    may require specific column names (documented in each method).
     """
 
     def __init__(self, data: pd.DataFrame, output_dir: str = "outputs"):
@@ -31,16 +33,12 @@ class GraphVisualizer:
         Initialize the visualizer.
 
         Args:
-            data: DataFrame with timeline data (must have speak_time, speak_person columns)
+            data: DataFrame with your data
             output_dir: Directory to save output files
         """
         self.data = data
         self.output_dir = Path(output_dir)
         self.output_dir.mkdir(exist_ok=True)
-
-        # Verify required columns
-        if 'speak_time' not in data.columns or 'speak_person' not in data.columns:
-            raise ValueError("Data must contain 'speak_time' and 'speak_person' columns")
 
     def timeline_chart(
         self,
@@ -49,7 +47,10 @@ class GraphVisualizer:
         format: Literal["png", "pdf", "html"] = "png"
     ) -> str:
         """
-        Create a timeline/Gantt-style chart showing when each person spoke.
+        Create a timeline/Gantt-style chart.
+
+        **Required columns:** 'speak_time' and 'speak_person'
+        (Use ExcelReader.get_timeline_data() to format your data appropriately)
 
         Args:
             title: Chart title
@@ -58,7 +59,14 @@ class GraphVisualizer:
 
         Returns:
             Path to the saved file
+
+        Raises:
+            ValueError: If required columns are missing
         """
+        # Validate required columns
+        if 'speak_time' not in self.data.columns or 'speak_person' not in self.data.columns:
+            raise ValueError("Timeline chart requires 'speak_time' and 'speak_person' columns")
+
         if format == "html":
             return self._timeline_chart_plotly(title, output_name)
         else:

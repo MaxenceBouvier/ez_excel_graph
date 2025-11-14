@@ -2,15 +2,17 @@
 
 **AI-Assisted Excel to Graph for Simplifying the Life of Many Social Science Ph.D. Students**
 
-Generate beautiful graphs from Excel timeline data using Python and Claude Code - no programming experience required!
+Generate beautiful graphs from Excel data using Python and Claude Code - no programming experience required!
 
-This project helps social science researchers visualize timeline data from Excel spreadsheets with columns like `speak_time`, `speak_person`, and multiple `idea_X` columns. Perfect for analyzing interviews, focus groups, discourse analysis, and other qualitative data.
+This project helps social science researchers visualize data from Excel spreadsheets. Perfect for analyzing interviews, focus groups, surveys, discourse analysis, and other qualitative or quantitative data. Works with any Excel structure - just describe what you want to visualize in natural language.
 
 ## 🎯 Features
 
-- 📊 Multiple chart types: Timeline/Gantt, Bar charts, Distribution plots, Heatmaps
-- 🇫🇷 Full support for French text and accents (é, è, à, ô, etc.)
-- 📁 Multiple output formats: PNG, PDF, Interactive HTML
+- 📊 Flexible visualization: Bar charts, Line plots, Scatter plots, Heatmaps, and more
+- 📁 Project-based organization: Manage multiple research projects separately
+- 🔄 Excel to CSV conversion: Easy data inspection for Claude
+- 🇫🇷 Full support for international text (French accents: é, è, à, ô, etc.)
+- 📤 Multiple output formats: PNG, PDF, Interactive HTML
 - 🤖 Natural language interface via Claude Code CLI
 - 🔒 Privacy-first: Excel data files never committed to GitHub
 - 📦 Easy setup with automated scripts
@@ -143,21 +145,62 @@ VSCode will open with full WSL integration!
 
 ## 📊 Using the Tool
 
-### Adding Your Excel Data
+### Working with Your Excel Data
 
-1. Place your Excel files in the `resources/` directory
-2. Your files should have this structure:
+You have two options for organizing your work:
 
-| speak_time | speak_person | idea_1 | idea_2 | idea_3 |
-|------------|--------------|--------|--------|--------|
-| T1 or 1    | P1 or Name   | value  | value  | value  |
-| T2 or 2    | P2 or Name   | value  | value  | value  |
+#### Option 1: Quick Start (Simple Use)
+
+Just add your Excel files directly to `resources/`:
+
+```bash
+# Add your file
+cp ~/my_data.xlsx resources/
+
+# Convert to CSV for easier inspection
+excel-to-graph convert resources/my_data.xlsx
+```
+
+#### Option 2: Project-Based (Recommended)
+
+For organized, multi-project work:
+
+```bash
+# Create a new project
+excel-to-graph init my-research-2024
+
+# Add Excel files to your project
+cp ~/survey_data.xlsx resources/my-research-2024/
+
+# Convert all Excel files in the project
+excel-to-graph convert resources/my-research-2024
+```
 
 **🔒 Privacy Note:** Your Excel files stay on your computer and are NEVER uploaded to GitHub!
 
+### Converting Excel to CSV
+
+Claude Code can inspect CSV files more easily than Excel. Convert your files:
+
+```bash
+# Activate environment
+source .venv/bin/activate
+
+# Convert a single file
+excel-to-graph convert resources/my_data.xlsx
+
+# Convert all files in a project
+excel-to-graph convert resources/my-project/
+
+# List all your projects
+excel-to-graph list
+```
+
+Each Excel sheet becomes a separate CSV file: `<filename>_<sheetname>.csv`
+
 ### Generating Graphs with Claude Code
 
-Activate the Python environment and start Claude Code:
+Start Claude Code and use natural language:
 
 ```bash
 # Activate Python environment
@@ -167,69 +210,85 @@ source .venv/bin/activate
 claude
 ```
 
-Then use natural language to generate graphs:
-
 #### English Prompts:
 ```
-"Generate a timeline chart from my Excel data in resources/"
+"Show me the structure of my Excel data in resources/"
 
-"Create a bar chart comparing speaking time per person, save as PDF"
+"Convert all Excel files in resources/interview-study/ to CSV"
 
-"Show me all ideas mentioned by Person 1 across all time periods"
+"Create a bar chart comparing column A values across all rows"
 
-"Generate all standard visualizations and save as PNG in outputs/"
+"Generate a scatter plot of age vs response_time from survey_data.xlsx"
 
-"Create an interactive HTML timeline that I can zoom and explore"
+"Make an interactive HTML visualization I can explore"
+
+"Save all visualizations as PDF in outputs/my-project/"
 ```
 
 #### French Prompts (Français):
 ```
-"Génère un graphique chronologique à partir de mes données Excel dans resources/"
+"Montre-moi la structure de mes données Excel dans resources/"
 
-"Crée un graphique en barres comparant le temps de parole par personne, enregistre en PDF"
+"Convertis tous les fichiers Excel de resources/etude-interviews/ en CSV"
 
-"Montre-moi toutes les idées mentionnées par la Personne 1 sur toutes les périodes"
+"Crée un graphique en barres comparant les valeurs de la colonne A"
 
-"Génère toutes les visualisations standard et enregistre en PNG dans outputs/"
+"Génère un nuage de points âge vs temps_réponse depuis sondage.xlsx"
+
+"Crée une visualisation HTML interactive que je peux explorer"
 ```
 
 ### Using the Command-Line Interface
 
-For quick graph generation without Claude Code:
+For quick operations without Claude Code:
 
 ```bash
 # Activate environment
 source .venv/bin/activate
 
-# Generate all charts from an Excel file
-excel-to-graph resources/your_data.xlsx --all
+# Create a new project
+excel-to-graph init my-project
 
-# Generate only timeline chart as PNG
-excel-to-graph resources/your_data.xlsx --timeline --format png
+# Convert Excel to CSV
+excel-to-graph convert resources/my_data.xlsx
+excel-to-graph convert resources/my-project/
 
-# Generate bar chart as interactive HTML
-excel-to-graph resources/your_data.xlsx --bar --format html
+# List all projects
+excel-to-graph list
+
+# Generate visualizations (legacy timeline format)
+excel-to-graph visualize resources/data.xlsx --all
 
 # See all options
 excel-to-graph --help
+excel-to-graph init --help
+excel-to-graph convert --help
 ```
 
 ## 📂 Project Structure
 
 ```
 excel_to_graph/
-├── README.md                 # This file
-├── resources/                # Place your Excel files here
-│   ├── README.md            # Data privacy information
-│   └── example_template.xlsx # Empty template
-├── outputs/                  # Generated graphs (auto-created)
-│   ├── png/                 # PNG images
-│   ├── pdf/                 # PDF files
-│   └── html/                # Interactive HTML plots
-├── scripts/                  # Setup scripts
-│   ├── setup_all.sh         # Main setup script
-│   └── ...                  # Individual setup scripts
-└── src/excel_to_graph/      # Python source code
+├── README.md                     # This file
+├── resources/                    # Excel files (never committed to git)
+│   ├── README.md                # Organization guide
+│   ├── example_template.xlsx    # Generic template
+│   ├── project-1/               # Your projects...
+│   │   ├── README.md
+│   │   ├── data.xlsx
+│   │   └── data_Sheet1.csv      # Auto-generated CSV
+│   └── project-2/
+├── outputs/                      # Generated graphs (auto-created)
+│   ├── png/                     # PNG images
+│   ├── pdf/                     # PDF files
+│   ├── html/                    # Interactive HTML
+│   ├── project-1/               # Project-specific outputs
+│   └── project-2/
+├── scripts/                      # Setup & project scripts
+│   ├── setup_all.sh             # Main setup script
+│   ├── project-1/               # Custom scripts per project
+│   └── ...
+└── src/excel_to_graph/          # Python source code
 ```
 
 ## 🪟 Windows Commands from WSL

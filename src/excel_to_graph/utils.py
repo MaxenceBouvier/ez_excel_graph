@@ -10,6 +10,64 @@ from typing import Optional
 import re
 
 
+def detect_project_from_path(file_path: str) -> Optional[str]:
+    """
+    Detect project name from a file path.
+
+    If the file is in resources/<project_name>/, returns the project name.
+    Otherwise returns None.
+
+    Args:
+        file_path: Path to check
+
+    Returns:
+        Project name or None
+
+    Examples:
+        >>> detect_project_from_path("resources/my-project/data.xlsx")
+        "my-project"
+
+        >>> detect_project_from_path("resources/data.xlsx")
+        None
+    """
+    path = Path(file_path)
+
+    # Check if path is under resources/
+    try:
+        # Get parts relative to resources directory
+        parts = path.parts
+
+        if 'resources' in parts:
+            resources_idx = parts.index('resources')
+            # Check if there's a subdirectory after resources
+            if len(parts) > resources_idx + 1:
+                potential_project = parts[resources_idx + 1]
+                # Verify it's not a file
+                project_path = Path('resources') / potential_project
+                if project_path.is_dir():
+                    return potential_project
+
+        return None
+    except (ValueError, IndexError):
+        return None
+
+
+def get_output_dir_for_project(project_name: Optional[str] = None, base_dir: str = "outputs") -> str:
+    """
+    Get the appropriate output directory for a project.
+
+    Args:
+        project_name: Project name (if None, uses base_dir)
+        base_dir: Base output directory
+
+    Returns:
+        Output directory path as string
+    """
+    if project_name:
+        return f"{base_dir}/{project_name}"
+    return base_dir
+
+
 def setup_output_dir(base_dir: str = "outputs") -> Path:
     """
     Create and organize the output directory structure.
@@ -21,7 +79,7 @@ def setup_output_dir(base_dir: str = "outputs") -> Path:
         Path object for the output directory
     """
     output_path = Path(base_dir)
-    output_path.mkdir(exist_ok=True)
+    output_path.mkdir(parents=True, exist_ok=True)
 
     # Create subdirectories for different output types
     (output_path / "png").mkdir(exist_ok=True)
@@ -213,3 +271,138 @@ def list_output_files(output_dir: str = "outputs", format: Optional[str] = None)
     files = sorted(output_path.glob(pattern), key=lambda p: p.stat().st_mtime, reverse=True)
 
     return [str(f) for f in files]
+
+
+def validate_project_name(name: str) -> tuple[bool, str]:
+    """
+    Validate a project name for file system safety.
+
+    Project names can only contain:
+    - Alphanumeric characters (a-z, A-Z, 0-9)
+    - Hyphens (-)
+    - Underscores (_)
+
+    Args:
+        name: Project name to validate
+
+    Returns:
+        Tuple of (is_valid, error_message)
+
+    Examples:
+        >>> validate_project_name("my-project_2024")
+        (True, "")
+
+        >>> validate_project_name("my project!")
+        (False, "Project name can only contain letters, numbers, hyphens, and underscores")
+    """
+    if not name:
+        return False, "Project name cannot be empty"
+
+    if len(name) > 100:
+        return False, "Project name is too long (max 100 characters)"
+
+    # Check for valid characters only
+    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+        return False, "Project name can only contain letters, numbers, hyphens (-), and underscores (_)"
+
+    # Check it doesn't start/end with special characters
+    if name[0] in ['-', '_'] or name[-1] in ['-', '_']:
+        return False, "Project name cannot start or end with hyphens or underscores"
+
+    # Reserved names
+    reserved = ['con', 'prn', 'aux', 'nul', 'com1', 'com2', 'lpt1', 'lpt2']
+    if name.lower() in reserved:
+        return False, f"'{name}' is a reserved name and cannot be used"
+
+    return True, ""
+
+
+def create_project_structure(project_name: str, base_dir: str = ".") -> dict:
+    """
+    Create the directory structure for a new project.
+
+    Creates:
+    - resources/<project_name>/
+    - outputs/<project_name>/
+    - scripts/<project_name>/
+
+    Args:
+        project_name: Name of the project
+        base_dir: Base directory (default: current directory)
+
+    Returns:
+        Dictionary with created paths
+
+    Raises:
+        ValueError: If project name is invalid or project already exists
+    """
+    # Validate project name
+    is_valid, error_msg = validate_project_name(project_name)
+    if not is_valid:
+        raise ValueError(error_msg)
+
+    base_path = Path(base_dir)
+
+    # Define project paths
+    project_paths = {
+        'resources': base_path / 'resources' / project_name,
+        'outputs': base_path / 'outputs' / project_name,
+        'scripts': base_path / 'scripts' / project_name,
+    }
+
+    # Check if project already exists
+    if any(path.exists() for path in project_paths.values()):
+        raise ValueError(f"Project '{project_name}' already exists")
+
+    # Create directories
+    for path in project_paths.values():
+        path.mkdir(parents=True, exist_ok=True)
+
+    # Create README in resources directory
+    resources_readme = project_paths['resources'] / 'README.md'
+    resources_readme.write_text(f"""# {project_name}
+
+This directory contains Excel files for the **{project_name}** project.
+
+## Usage
+
+1. Place your Excel files (.xlsx, .xls) in this directory
+2. Convert them to CSV for easier inspection:
+   ```bash
+   excel-to-graph convert resources/{project_name}
+   ```
+3. Generate visualizations using Claude Code or the CLI
+
+## Files
+
+Add your Excel data files here. They will not be committed to git (protected by .gitignore).
+
+Generated CSV files will also appear here for easier data inspection.
+""")
+
+    return {k: str(v) for k, v in project_paths.items()}
+
+
+def list_projects(base_dir: str = ".") -> list[str]:
+    """
+    List all initialized projects.
+
+    Args:
+        base_dir: Base directory to search
+
+    Returns:
+        List of project names
+    """
+    base_path = Path(base_dir)
+    resources_dir = base_path / 'resources'
+
+    if not resources_dir.exists():
+        return []
+
+    # Find all subdirectories in resources (these are projects)
+    projects = [
+        d.name for d in resources_dir.iterdir()
+        if d.is_dir() and not d.name.startswith('.')
+    ]
+
+    return sorted(projects)

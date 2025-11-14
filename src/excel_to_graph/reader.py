@@ -1,8 +1,8 @@
 """
-Excel file reader module for timeline data.
+Excel file reader module.
 
 This module handles reading Excel files with proper UTF-8 encoding
-to support French characters (accents: é, è, à, ô, etc.).
+to support international characters (French accents: é, è, à, ô, etc.).
 """
 
 import pandas as pd
@@ -12,12 +12,10 @@ from typing import Dict, List, Optional
 
 class ExcelReader:
     """
-    Read and parse Excel files containing timeline data.
+    Read and parse Excel files for data analysis.
 
-    Expected format:
-    - Column 1: speak_time (T1, T2, T3, ... or numeric 1, 2, 3, ...)
-    - Column 2: speak_person (P1, P2, P3, ... or person names)
-    - Remaining columns: idea_1, idea_2, idea_3, etc.
+    Supports reading Excel files with multiple sheets and provides
+    utilities for data inspection and preprocessing.
     """
 
     def __init__(self, file_path: str):
@@ -67,15 +65,46 @@ class ExcelReader:
         )
         return df
 
+    def get_data(self, sheet_name: Optional[str] = None, normalize_columns: bool = True) -> pd.DataFrame:
+        """
+        Get data from a sheet with optional column name normalization.
+
+        Args:
+            sheet_name: Name of the sheet to process (if None, uses first sheet)
+            normalize_columns: Whether to normalize column names (lowercase, strip whitespace)
+
+        Returns:
+            DataFrame with the sheet data
+        """
+        if sheet_name is None:
+            if not self.workbook_data:
+                self.load_all_sheets()
+            sheet_name = self.sheet_names[0]
+
+        df = self.workbook_data.get(sheet_name) or self.load_sheet(sheet_name)
+
+        if normalize_columns:
+            # Normalize column names (lowercase, strip whitespace)
+            df.columns = df.columns.str.strip().str.lower()
+
+        return df
+
     def get_timeline_data(self, sheet_name: Optional[str] = None) -> pd.DataFrame:
         """
-        Get timeline data from a sheet, normalized for analysis.
+        Get data from a sheet and format for timeline analysis.
+
+        This is a specialized method that assumes a specific data structure:
+        - Column 1: time/period data
+        - Column 2: person/entity data
+        - Remaining columns: additional attributes
+
+        The first two columns will be renamed to 'speak_time' and 'speak_person'.
 
         Args:
             sheet_name: Name of the sheet to process (if None, uses first sheet)
 
         Returns:
-            DataFrame with normalized column names
+            DataFrame with normalized and renamed columns
         """
         if sheet_name is None:
             if not self.workbook_data:
@@ -116,7 +145,7 @@ class ExcelReader:
 
     def get_summary_stats(self, df: pd.DataFrame) -> Dict:
         """
-        Get summary statistics about the timeline data.
+        Get summary statistics about the data.
 
         Args:
             df: DataFrame to analyze
@@ -126,13 +155,23 @@ class ExcelReader:
         """
         stats = {
             'total_rows': len(df),
-            'unique_speakers': df['speak_person'].nunique() if 'speak_person' in df.columns else 0,
-            'unique_times': df['speak_time'].nunique() if 'speak_time' in df.columns else 0,
-            'speakers': df['speak_person'].unique().tolist() if 'speak_person' in df.columns else [],
-            'time_range': df['speak_time'].unique().tolist() if 'speak_time' in df.columns else [],
-            'idea_columns': self.get_idea_columns(df),
-            'num_idea_columns': len(self.get_idea_columns(df))
+            'total_columns': len(df.columns),
+            'column_names': df.columns.tolist(),
         }
+
+        # Add timeline-specific stats if columns exist
+        if 'speak_person' in df.columns:
+            stats['unique_speakers'] = df['speak_person'].nunique()
+            stats['speakers'] = df['speak_person'].unique().tolist()
+
+        if 'speak_time' in df.columns:
+            stats['unique_times'] = df['speak_time'].nunique()
+            stats['time_range'] = df['speak_time'].unique().tolist()
+
+        if 'speak_person' in df.columns or 'speak_time' in df.columns:
+            stats['idea_columns'] = self.get_idea_columns(df)
+            stats['num_idea_columns'] = len(self.get_idea_columns(df))
+
         return stats
 
     def __repr__(self) -> str:

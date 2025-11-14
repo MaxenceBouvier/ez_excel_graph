@@ -1,7 +1,7 @@
 """
 Command-line interface for excel_to_graph.
 
-This provides a simple CLI for quick graph generation,
+This provides a simple CLI for quick operations,
 though the main interface is through Claude Code natural language prompts.
 """
 
@@ -12,99 +12,118 @@ from typing import Optional
 
 from excel_to_graph.reader import ExcelReader
 from excel_to_graph.visualizer import GraphVisualizer
-from excel_to_graph.utils import setup_output_dir, generate_filename
+from excel_to_graph.converter import convert_excel_to_csv, convert_directory
+from excel_to_graph.utils import (
+    setup_output_dir,
+    create_project_structure,
+    list_projects,
+    detect_project_from_path,
+    get_output_dir_for_project,
+)
 
 
-def main():
-    """Main CLI entry point."""
-    parser = argparse.ArgumentParser(
-        description="Generate graphs from Excel timeline data",
-        formatter_class=argparse.RawDescriptionHelpFormatter,
-        epilog="""
-Examples:
-  # Generate all standard charts from an Excel file
-  excel-to-graph resources/data.xlsx --all
+def cmd_init(args):
+    """Handle the init command to create a new project."""
+    try:
+        paths = create_project_structure(args.project_name)
 
-  # Generate only timeline chart as PNG
-  excel-to-graph resources/data.xlsx --timeline --format png
+        print(f"✓ Created project: {args.project_name}")
+        print(f"\nDirectories created:")
+        for dir_type, path in paths.items():
+            print(f"  - {dir_type}: {path}")
 
-  # Generate bar chart as interactive HTML
-  excel-to-graph resources/data.xlsx --bar --format html
+        print(f"\nNext steps:")
+        print(f"  1. Add your Excel files to: resources/{args.project_name}/")
+        print(f"  2. Convert to CSV: excel-to-graph convert resources/{args.project_name}")
+        print(f"  3. Use Claude Code to generate visualizations")
 
-  # Generate charts from specific sheet
-  excel-to-graph resources/data.xlsx --sheet "Sheet1" --all
+        return 0
 
-For more advanced usage, use Claude Code with natural language:
-  claude
-  > "Generate a timeline chart from my Excel data"
-        """
-    )
+    except ValueError as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+    except Exception as e:
+        print(f"Unexpected error: {e}", file=sys.stderr)
+        return 1
 
-    parser.add_argument(
-        "file",
-        type=str,
-        help="Path to Excel file"
-    )
 
-    parser.add_argument(
-        "-s", "--sheet",
-        type=str,
-        default=None,
-        help="Sheet name to process (default: first sheet)"
-    )
+def cmd_convert(args):
+    """Handle the convert command to convert Excel to CSV."""
+    input_path = Path(args.path)
 
-    parser.add_argument(
-        "-o", "--output",
-        type=str,
-        default="outputs",
-        help="Output directory (default: outputs)"
-    )
+    if not input_path.exists():
+        print(f"Error: Path not found: {input_path}", file=sys.stderr)
+        return 1
 
-    parser.add_argument(
-        "-f", "--format",
-        choices=["png", "pdf", "html"],
-        default="png",
-        help="Output format (default: png)"
-    )
+    try:
+        if input_path.is_file():
+            # Convert single file
+            print(f"Converting: {input_path.name}")
+            output_dir = Path(args.output) if args.output else None
+            csv_files = convert_excel_to_csv(input_path, output_dir, verbose=True)
+            print(f"\n✓ Created {len(csv_files)} CSV file(s)")
 
-    # Chart type options
-    chart_group = parser.add_argument_group("chart types")
-    chart_group.add_argument(
-        "--timeline",
-        action="store_true",
-        help="Generate timeline/Gantt chart"
-    )
-    chart_group.add_argument(
-        "--bar",
-        action="store_true",
-        help="Generate bar chart of speaking time"
-    )
-    chart_group.add_argument(
-        "--distribution",
-        action="store_true",
-        help="Generate distribution plot"
-    )
-    chart_group.add_argument(
-        "--heatmap",
-        action="store_true",
-        help="Generate heatmap"
-    )
-    chart_group.add_argument(
-        "--all",
-        action="store_true",
-        help="Generate all chart types"
-    )
+        elif input_path.is_dir():
+            # Convert all files in directory
+            print(f"Converting Excel files in: {input_path}")
+            output_dir = Path(args.output) if args.output else None
+            results = convert_directory(input_path, output_dir, verbose=True)
 
-    args = parser.parse_args()
+            total_csv = sum(len(csvs) for csvs in results.values())
+            print(f"\n✓ Converted {len(results)} Excel file(s) to {total_csv} CSV file(s)")
 
+        else:
+            print(f"Error: Invalid path: {input_path}", file=sys.stderr)
+            return 1
+
+        return 0
+
+    except Exception as e:
+        print(f"Error: {e}", file=sys.stderr)
+        return 1
+
+
+def cmd_list(args):
+    """Handle the list command to show all projects."""
+    projects = list_projects()
+
+    if not projects:
+        print("No projects found.")
+        print("\nCreate a new project with:")
+        print("  excel-to-graph init <project_name>")
+        return 0
+
+    print(f"Found {len(projects)} project(s):\n")
+    for project in projects:
+        print(f"  - {project}")
+
+    print(f"\nTo work with a project:")
+    print(f"  1. Add Excel files to resources/<project_name>/")
+    print(f"  2. Convert: excel-to-graph convert resources/<project_name>")
+    print(f"  3. Use Claude Code for visualizations")
+
+    return 0
+
+
+def cmd_visualize(args):
+    """Handle the visualize command (backward compatibility)."""
     # Validate file exists
     if not Path(args.file).exists():
         print(f"Error: File not found: {args.file}", file=sys.stderr)
         return 1
 
     try:
+        # Detect project and determine output directory
+        project_name = detect_project_from_path(args.file)
+        if project_name and args.output == "outputs":  # Only auto-organize if using default
+            output_dir = get_output_dir_for_project(project_name)
+            print(f"Detected project: {project_name}")
+            print(f"Outputs will be saved to: {output_dir}")
+        else:
+            output_dir = args.output
+
         # Setup output directory
-        setup_output_dir(args.output)
+        setup_output_dir(output_dir)
 
         # Load Excel data
         print(f"Loading Excel file: {args.file}")
@@ -112,19 +131,18 @@ For more advanced usage, use Claude Code with natural language:
         reader.load_all_sheets()
 
         # Get data from specified sheet
-        df = reader.get_timeline_data(args.sheet)
+        df = reader.get_data(args.sheet)
 
         print(f"Loaded {len(df)} rows from sheet: {args.sheet or reader.sheet_names[0]}")
 
         # Show summary stats
         stats = reader.get_summary_stats(df)
-        print(f"  - {stats['unique_speakers']} unique speakers")
-        print(f"  - {stats['unique_times']} time periods")
-        print(f"  - {stats['num_idea_columns']} idea columns")
+        print(f"  - {stats['total_rows']} rows")
+        print(f"  - {len(df.columns)} columns")
         print()
 
         # Create visualizer
-        visualizer = GraphVisualizer(df, args.output)
+        visualizer = GraphVisualizer(df, output_dir)
 
         # Determine which charts to generate
         generate_all = args.all or not any([args.timeline, args.bar, args.distribution, args.heatmap])
@@ -161,13 +179,140 @@ For more advanced usage, use Claude Code with natural language:
 
         print()
         print(f"✓ Successfully generated {len(generated_files)} chart(s)")
-        print(f"  Output directory: {args.output}")
+        print(f"  Output directory: {output_dir}")
 
         return 0
 
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         return 1
+
+
+def main():
+    """Main CLI entry point."""
+    parser = argparse.ArgumentParser(
+        prog="excel-to-graph",
+        description="AI-assisted Excel data visualization tool",
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+For more advanced usage, use Claude Code with natural language:
+  claude
+  > "Generate visualizations from my Excel data"
+  > "Convert all Excel files in resources/my_project to CSV"
+        """
+    )
+
+    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+    # Init command
+    parser_init = subparsers.add_parser(
+        "init",
+        help="Initialize a new project",
+        description="Create a new project with organized directory structure"
+    )
+    parser_init.add_argument(
+        "project_name",
+        type=str,
+        help="Name of the project (letters, numbers, hyphens, underscores only)"
+    )
+    parser_init.set_defaults(func=cmd_init)
+
+    # Convert command
+    parser_convert = subparsers.add_parser(
+        "convert",
+        help="Convert Excel files to CSV",
+        description="Convert Excel files to CSV for easier inspection by Claude"
+    )
+    parser_convert.add_argument(
+        "path",
+        type=str,
+        help="Path to Excel file or directory containing Excel files"
+    )
+    parser_convert.add_argument(
+        "-o", "--output",
+        type=str,
+        default=None,
+        help="Output directory for CSV files (default: same as source)"
+    )
+    parser_convert.set_defaults(func=cmd_convert)
+
+    # List command
+    parser_list = subparsers.add_parser(
+        "list",
+        help="List all projects",
+        description="Show all initialized projects"
+    )
+    parser_list.set_defaults(func=cmd_list)
+
+    # Visualize command (for backward compatibility, can also be default)
+    parser_viz = subparsers.add_parser(
+        "visualize",
+        help="Generate visualizations from Excel data",
+        description="Generate charts and graphs from Excel data"
+    )
+    parser_viz.add_argument(
+        "file",
+        type=str,
+        help="Path to Excel file"
+    )
+    parser_viz.add_argument(
+        "-s", "--sheet",
+        type=str,
+        default=None,
+        help="Sheet name to process (default: first sheet)"
+    )
+    parser_viz.add_argument(
+        "-o", "--output",
+        type=str,
+        default="outputs",
+        help="Output directory (default: outputs)"
+    )
+    parser_viz.add_argument(
+        "-f", "--format",
+        choices=["png", "pdf", "html"],
+        default="png",
+        help="Output format (default: png)"
+    )
+
+    # Chart type options for visualize
+    chart_group = parser_viz.add_argument_group("chart types")
+    chart_group.add_argument(
+        "--timeline",
+        action="store_true",
+        help="Generate timeline chart"
+    )
+    chart_group.add_argument(
+        "--bar",
+        action="store_true",
+        help="Generate bar chart"
+    )
+    chart_group.add_argument(
+        "--distribution",
+        action="store_true",
+        help="Generate distribution plot"
+    )
+    chart_group.add_argument(
+        "--heatmap",
+        action="store_true",
+        help="Generate heatmap"
+    )
+    chart_group.add_argument(
+        "--all",
+        action="store_true",
+        help="Generate all chart types"
+    )
+    parser_viz.set_defaults(func=cmd_visualize)
+
+    # Parse arguments
+    args = parser.parse_args()
+
+    # If no command specified, show help
+    if not args.command:
+        parser.print_help()
+        return 0
+
+    # Execute the appropriate command
+    return args.func(args)
 
 
 if __name__ == "__main__":
