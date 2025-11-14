@@ -6,6 +6,28 @@ Generate beautiful graphs from Excel data using Python and Claude Code - no prog
 
 This project helps social science researchers visualize data from Excel spreadsheets. Perfect for analyzing interviews, focus groups, surveys, discourse analysis, and other qualitative or quantitative data. Works with any Excel structure - just describe what you want to visualize in natural language.
 
+## 📑 Table of Contents
+
+- [🎯 Features](#-features)
+- [📋 Prerequisites](#-prerequisites)
+- [🚀 Complete Setup Guide](#-complete-setup-guide)
+  - [Step 1: Install WSL (Windows Subsystem for Linux)](#step-1-install-wsl-windows-subsystem-for-linux)
+  - [Step 2: Setup Git in WSL](#step-2-setup-git-in-wsl)
+  - [Step 3: Clone This Repository](#step-3-clone-this-repository)
+  - [Step 4: Run Complete Setup](#step-4-run-complete-setup)
+  - [Step 5: Authenticate Claude Code](#step-5-authenticate-claude-code)
+  - [Step 6: Open in VSCode (Highly Recommended!)](#step-6-open-in-vscode-highly-recommended)
+  - [Step 7: Setup GitHub Authentication (Optional)](#step-7-setup-github-authentication-optional)
+- [📊 Using the Tool](#-using-the-tool)
+  - [Working with Your Excel Data](#working-with-your-excel-data)
+  - [Generating Graphs with Claude Code](#generating-graphs-with-claude-code)
+  - [Using the Command-Line Interface](#using-the-command-line-interface)
+- [📂 Project Structure](#-project-structure)
+- [🪟 Windows Commands from WSL](#-windows-commands-from-wsl)
+- [🔧 Troubleshooting](#-troubleshooting)
+- [🤝 Contributing & Getting Help](#-contributing--getting-help)
+- [📝 License](#-license)
+
 ## 🎯 Features
 
 - 📊 Flexible visualization: Bar charts, Line plots, Scatter plots, Heatmaps, and more
@@ -139,7 +161,7 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    - Search for "Remote - WSL"
    - Install it
 
-   <img src="docs/images/image.png" alt="WSL Extension in VSCode Marketplace" width="600">
+   ![WSL Extension in VSCode Marketplace](docs/images/image.png)
 
 3. **Open the project from WSL terminal**
    ```bash
@@ -147,6 +169,40 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    ```
 
 VSCode will open with full WSL integration! You can now drag and drop your Excel files into the `resources/` folder or any project subfolder.
+
+### Step 7: Setup GitHub Authentication (Optional)
+
+**Only needed if you want to push changes back to GitHub!** If you just want to use the tool to create graphs, you can skip this step.
+
+The easiest way to authenticate with GitHub from WSL is using the `gh` CLI tool:
+
+1. **Install GitHub CLI**
+   ```bash
+   # Install gh CLI
+   sudo apt update
+   sudo apt install -y gh
+   ```
+
+2. **Authenticate with GitHub**
+   ```bash
+   # Start authentication (this will open your browser)
+   gh auth login
+   ```
+
+3. **Follow the prompts:**
+   - Select: **GitHub.com**
+   - Select: **HTTPS** (easiest for beginners)
+   - Authenticate Git with GitHub credentials? **Yes**
+   - How would you like to authenticate? **Login with a web browser**
+   - Copy the one-time code shown, press Enter
+   - Your browser will open - paste the code and authorize
+
+That's it! Now you can push changes without being prompted for credentials.
+
+**What can you do after authentication?**
+- Push your changes: `git push`
+- Create pull requests: `gh pr create`
+- View issues: `gh issue list`
 
 ## 📊 Using the Tool
 
@@ -352,7 +408,7 @@ If you try to commit an Excel file (except the template), the pre-commit hook wi
 If you encounter issues or want to suggest improvements:
 
 1. **Check existing issues** on GitHub
-2. **Create a new issue** with details about your problem
+2. **Create a new issue** with details about your problem. (Ask Claude to create a report.)
 3. **Ask Claude Code** for help:
    ```bash
    claude
