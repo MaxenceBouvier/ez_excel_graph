@@ -1,5 +1,7 @@
 # Excel to Graph
 
+*[English](README.md) | [Français](#)*
+
 **Conversion Excel vers Graphiques Assistée par IA pour Simplifier la Vie de Nombreux Doctorants en Sciences Sociales**
 
 Générez de magnifiques graphiques à partir de données Excel en utilisant Python et Claude Code - aucune expérience en programmation requise !

@@ -1,5 +1,7 @@
 # Excel to Graph
 
+*[English](#) | [Français](README.fr.md)*
+
 **AI-Assisted Excel to Graph for Simplifying the Life of Many Social Science Ph.D. Students**
 
 Generate beautiful graphs from Excel data using Python and Claude Code - no programming experience required!
