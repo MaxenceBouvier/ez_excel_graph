@@ -101,7 +101,7 @@ mkdir -p ~/proj
 cd ~/proj
 
 # Clone the repository
-git clone https://github.com/YOUR_USERNAME/excel_to_graph.git
+git clone https://github.com/MaxenceBouvier/ez_excel_graph.git excel_to_graph
 
 # Navigate into the project
 cd excel_to_graph
