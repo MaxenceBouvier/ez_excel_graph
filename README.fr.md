@@ -81,6 +81,7 @@ Si vous n'avez pas encore WSL installé :
 5. **À propos des commandes du terminal ci-dessous**
    - Toutes les commandes qui suivent doivent être tapées dans le terminal Ubuntu
    - N'ayez pas peur - copiez et collez-les simplement une par une
+   - **Important :** Pour coller dans le terminal, utilisez `Ctrl+Shift+V` (pas `Ctrl+V`). Pour copier depuis le terminal, utilisez `Ctrl+Shift+C` (pas `Ctrl+C`)
    - Appuyez sur `Entrée` après chaque commande pour l'exécuter
    - Le terminal est votre ami !
 

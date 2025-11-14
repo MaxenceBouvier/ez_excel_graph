@@ -81,6 +81,7 @@ If you don't have WSL installed yet:
 5. **About the terminal commands below**
    - All commands that follow must be typed in the Ubuntu terminal
    - Don't be frightened - just copy and paste them one by one
+   - **Important:** To paste in the terminal, use `Ctrl+Shift+V` (not `Ctrl+V`). To copy from the terminal, use `Ctrl+Shift+C` (not `Ctrl+C`)
    - Press `Enter` after each command to run it
    - The terminal is your friend!
 
