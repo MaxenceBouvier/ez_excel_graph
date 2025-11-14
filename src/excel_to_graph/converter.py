@@ -12,9 +12,7 @@ import sys
 
 
 def convert_excel_to_csv(
-    excel_file: Path,
-    output_dir: Optional[Path] = None,
-    verbose: bool = True
+    excel_file: Path, output_dir: Optional[Path] = None, verbose: bool = True
 ) -> List[Path]:
     """
     Convert an Excel file to CSV format(s).
@@ -37,7 +35,7 @@ def convert_excel_to_csv(
     if not excel_file.exists():
         raise FileNotFoundError(f"Excel file not found: {excel_file}")
 
-    if excel_file.suffix.lower() not in ['.xlsx', '.xls', '.xlsm', '.xlsb']:
+    if excel_file.suffix.lower() not in [".xlsx", ".xls", ".xlsm", ".xlsb"]:
         raise ValueError(f"Not an Excel file: {excel_file}")
 
     # Determine output directory
@@ -49,7 +47,7 @@ def convert_excel_to_csv(
 
     # Read all sheets from Excel file
     try:
-        excel_data = pd.read_excel(excel_file, sheet_name=None, engine='openpyxl')
+        excel_data = pd.read_excel(excel_file, sheet_name=None, engine="openpyxl")
     except Exception as e:
         raise ValueError(f"Failed to read Excel file: {e}")
 
@@ -68,7 +66,7 @@ def convert_excel_to_csv(
         csv_path = output_dir / csv_filename
 
         # Save to CSV
-        df.to_csv(csv_path, index=False, encoding='utf-8')
+        df.to_csv(csv_path, index=False, encoding="utf-8")
         created_files.append(csv_path)
 
         if verbose:
@@ -91,32 +89,30 @@ def sanitize_sheet_name(name: str) -> str:
     # Replace problematic characters with underscores
     safe_chars = []
     for char in name:
-        if char.isalnum() or char in ['-', '_']:
+        if char.isalnum() or char in ["-", "_"]:
             safe_chars.append(char)
-        elif char == ' ':
-            safe_chars.append('_')
+        elif char == " ":
+            safe_chars.append("_")
         # Skip other characters
 
-    result = ''.join(safe_chars)
+    result = "".join(safe_chars)
 
     # Remove multiple consecutive underscores
-    while '__' in result:
-        result = result.replace('__', '_')
+    while "__" in result:
+        result = result.replace("__", "_")
 
     # Remove leading/trailing underscores
-    result = result.strip('_')
+    result = result.strip("_")
 
     # Ensure not empty
     if not result:
-        result = 'sheet'
+        result = "sheet"
 
     return result
 
 
 def convert_directory(
-    directory: Path,
-    output_dir: Optional[Path] = None,
-    verbose: bool = True
+    directory: Path, output_dir: Optional[Path] = None, verbose: bool = True
 ) -> dict:
     """
     Convert all Excel files in a directory to CSV.
@@ -139,7 +135,7 @@ def convert_directory(
         raise ValueError(f"Not a directory: {directory}")
 
     # Find all Excel files
-    excel_extensions = ['*.xlsx', '*.xls', '*.xlsm', '*.xlsb']
+    excel_extensions = ["*.xlsx", "*.xls", "*.xlsm", "*.xlsb"]
     excel_files = []
 
     for ext in excel_extensions:

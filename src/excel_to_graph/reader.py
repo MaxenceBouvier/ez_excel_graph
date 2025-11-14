@@ -41,9 +41,7 @@ class ExcelReader:
         """
         # Read all sheets with proper encoding
         self.workbook_data = pd.read_excel(
-            self.file_path,
-            sheet_name=None,  # Load all sheets
-            engine='openpyxl'
+            self.file_path, sheet_name=None, engine="openpyxl"  # Load all sheets
         )
         self.sheet_names = list(self.workbook_data.keys())
         return self.workbook_data
@@ -58,14 +56,12 @@ class ExcelReader:
         Returns:
             DataFrame containing the sheet data
         """
-        df = pd.read_excel(
-            self.file_path,
-            sheet_name=sheet_name,
-            engine='openpyxl'
-        )
+        df = pd.read_excel(self.file_path, sheet_name=sheet_name, engine="openpyxl")
         return df
 
-    def get_data(self, sheet_name: Optional[str] = None, normalize_columns: bool = True) -> pd.DataFrame:
+    def get_data(
+        self, sheet_name: Optional[str] = None, normalize_columns: bool = True
+    ) -> pd.DataFrame:
         """
         Get data from a sheet with optional column name normalization.
 
@@ -121,10 +117,7 @@ class ExcelReader:
         if len(df.columns) >= 2:
             cols = list(df.columns)
             # Rename first two columns to standard names
-            df = df.rename(columns={
-                cols[0]: 'speak_time',
-                cols[1]: 'speak_person'
-            })
+            df = df.rename(columns={cols[0]: "speak_time", cols[1]: "speak_person"})
 
         return df
 
@@ -139,8 +132,7 @@ class ExcelReader:
             List of column names that contain ideas
         """
         # All columns except speak_time and speak_person are idea columns
-        idea_cols = [col for col in df.columns
-                     if col not in ['speak_time', 'speak_person']]
+        idea_cols = [col for col in df.columns if col not in ["speak_time", "speak_person"]]
         return idea_cols
 
     def get_summary_stats(self, df: pd.DataFrame) -> Dict:
@@ -154,23 +146,23 @@ class ExcelReader:
             Dictionary with summary statistics
         """
         stats = {
-            'total_rows': len(df),
-            'total_columns': len(df.columns),
-            'column_names': df.columns.tolist(),
+            "total_rows": len(df),
+            "total_columns": len(df.columns),
+            "column_names": df.columns.tolist(),
         }
 
         # Add timeline-specific stats if columns exist
-        if 'speak_person' in df.columns:
-            stats['unique_speakers'] = df['speak_person'].nunique()
-            stats['speakers'] = df['speak_person'].unique().tolist()
+        if "speak_person" in df.columns:
+            stats["unique_speakers"] = df["speak_person"].nunique()
+            stats["speakers"] = df["speak_person"].unique().tolist()
 
-        if 'speak_time' in df.columns:
-            stats['unique_times'] = df['speak_time'].nunique()
-            stats['time_range'] = df['speak_time'].unique().tolist()
+        if "speak_time" in df.columns:
+            stats["unique_times"] = df["speak_time"].nunique()
+            stats["time_range"] = df["speak_time"].unique().tolist()
 
-        if 'speak_person' in df.columns or 'speak_time' in df.columns:
-            stats['idea_columns'] = self.get_idea_columns(df)
-            stats['num_idea_columns'] = len(self.get_idea_columns(df))
+        if "speak_person" in df.columns or "speak_time" in df.columns:
+            stats["idea_columns"] = self.get_idea_columns(df)
+            stats["num_idea_columns"] = len(self.get_idea_columns(df))
 
         return stats
 

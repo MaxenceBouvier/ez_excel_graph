@@ -37,13 +37,13 @@ def detect_project_from_path(file_path: str) -> Optional[str]:
         # Get parts relative to resources directory
         parts = path.parts
 
-        if 'resources' in parts:
-            resources_idx = parts.index('resources')
+        if "resources" in parts:
+            resources_idx = parts.index("resources")
             # Check if there's a subdirectory after resources
             if len(parts) > resources_idx + 1:
                 potential_project = parts[resources_idx + 1]
                 # Verify it's not a file
-                project_path = Path('resources') / potential_project
+                project_path = Path("resources") / potential_project
                 if project_path.is_dir():
                     return potential_project
 
@@ -52,7 +52,9 @@ def detect_project_from_path(file_path: str) -> Optional[str]:
         return None
 
 
-def get_output_dir_for_project(project_name: Optional[str] = None, base_dir: str = "outputs") -> str:
+def get_output_dir_for_project(
+    project_name: Optional[str] = None, base_dir: str = "outputs"
+) -> str:
     """
     Get the appropriate output directory for a project.
 
@@ -90,10 +92,7 @@ def setup_output_dir(base_dir: str = "outputs") -> Path:
 
 
 def generate_filename(
-    base_name: str,
-    chart_type: str = "",
-    format: str = "png",
-    include_timestamp: bool = True
+    base_name: str, chart_type: str = "", format: str = "png", include_timestamp: bool = True
 ) -> str:
     """
     Generate a meaningful filename for output files.
@@ -153,19 +152,16 @@ def sanitize_filename(name: str) -> str:
     name = name.lower()
 
     # Replace spaces and special characters with underscores
-    name = re.sub(r'[^\w\s-]', '', name)
-    name = re.sub(r'[\s-]+', '_', name)
+    name = re.sub(r"[^\w\s-]", "", name)
+    name = re.sub(r"[\s-]+", "_", name)
 
     # Remove leading/trailing underscores
-    name = name.strip('_')
+    name = name.strip("_")
 
     return name
 
 
-def organize_output_file(
-    file_path: str,
-    organize_by_type: bool = True
-) -> str:
+def organize_output_file(file_path: str, organize_by_type: bool = True) -> str:
     """
     Move an output file to the appropriate subdirectory.
 
@@ -182,8 +178,8 @@ def organize_output_file(
         return str(path)
 
     # Determine subdirectory based on extension
-    ext = path.suffix.lstrip('.')
-    if ext in ['png', 'pdf', 'html']:
+    ext = path.suffix.lstrip(".")
+    if ext in ["png", "pdf", "html"]:
         subdir = path.parent / ext
         subdir.mkdir(exist_ok=True)
 
@@ -240,7 +236,7 @@ def format_size(size_bytes: int) -> str:
         >>> format_size(1048576)
         '1.0 MB'
     """
-    for unit in ['B', 'KB', 'MB', 'GB']:
+    for unit in ["B", "KB", "MB", "GB"]:
         if size_bytes < 1024.0:
             return f"{size_bytes:.1f} {unit}"
         size_bytes /= 1024.0
@@ -302,15 +298,18 @@ def validate_project_name(name: str) -> tuple[bool, str]:
         return False, "Project name is too long (max 100 characters)"
 
     # Check for valid characters only
-    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
-        return False, "Project name can only contain letters, numbers, hyphens (-), and underscores (_)"
+    if not re.match(r"^[a-zA-Z0-9_-]+$", name):
+        return (
+            False,
+            "Project name can only contain letters, numbers, hyphens (-), and underscores (_)",
+        )
 
     # Check it doesn't start/end with special characters
-    if name[0] in ['-', '_'] or name[-1] in ['-', '_']:
+    if name[0] in ["-", "_"] or name[-1] in ["-", "_"]:
         return False, "Project name cannot start or end with hyphens or underscores"
 
     # Reserved names
-    reserved = ['con', 'prn', 'aux', 'nul', 'com1', 'com2', 'lpt1', 'lpt2']
+    reserved = ["con", "prn", "aux", "nul", "com1", "com2", "lpt1", "lpt2"]
     if name.lower() in reserved:
         return False, f"'{name}' is a reserved name and cannot be used"
 
@@ -345,9 +344,9 @@ def create_project_structure(project_name: str, base_dir: str = ".") -> dict:
 
     # Define project paths
     project_paths = {
-        'resources': base_path / 'resources' / project_name,
-        'outputs': base_path / 'outputs' / project_name,
-        'scripts': base_path / 'scripts' / project_name,
+        "resources": base_path / "resources" / project_name,
+        "outputs": base_path / "outputs" / project_name,
+        "scripts": base_path / "scripts" / project_name,
     }
 
     # Check if project already exists
@@ -359,8 +358,9 @@ def create_project_structure(project_name: str, base_dir: str = ".") -> dict:
         path.mkdir(parents=True, exist_ok=True)
 
     # Create README in resources directory
-    resources_readme = project_paths['resources'] / 'README.md'
-    resources_readme.write_text(f"""# {project_name}
+    resources_readme = project_paths["resources"] / "README.md"
+    resources_readme.write_text(
+        f"""# {project_name}
 
 This directory contains Excel files for the **{project_name}** project.
 
@@ -378,7 +378,8 @@ This directory contains Excel files for the **{project_name}** project.
 Add your Excel data files here. They will not be committed to git (protected by .gitignore).
 
 Generated CSV files will also appear here for easier data inspection.
-""")
+"""
+    )
 
     return {k: str(v) for k, v in project_paths.items()}
 
@@ -394,15 +395,14 @@ def list_projects(base_dir: str = ".") -> list[str]:
         List of project names
     """
     base_path = Path(base_dir)
-    resources_dir = base_path / 'resources'
+    resources_dir = base_path / "resources"
 
     if not resources_dir.exists():
         return []
 
     # Find all subdirectories in resources (these are projects)
     projects = [
-        d.name for d in resources_dir.iterdir()
-        if d.is_dir() and not d.name.startswith('.')
+        d.name for d in resources_dir.iterdir() if d.is_dir() and not d.name.startswith(".")
     ]
 
     return sorted(projects)

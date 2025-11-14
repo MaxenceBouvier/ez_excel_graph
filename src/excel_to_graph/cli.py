@@ -8,7 +8,6 @@ though the main interface is through Claude Code natural language prompts.
 import sys
 import argparse
 from pathlib import Path
-from typing import Optional
 
 from excel_to_graph.reader import ExcelReader
 from excel_to_graph.visualizer import GraphVisualizer
@@ -28,14 +27,14 @@ def cmd_init(args):
         paths = create_project_structure(args.project_name)
 
         print(f"✓ Created project: {args.project_name}")
-        print(f"\nDirectories created:")
+        print("\nDirectories created:")
         for dir_type, path in paths.items():
             print(f"  - {dir_type}: {path}")
 
-        print(f"\nNext steps:")
+        print("\nNext steps:")
         print(f"  1. Add your Excel files to: resources/{args.project_name}/")
         print(f"  2. Convert to CSV: excel-to-graph convert resources/{args.project_name}")
-        print(f"  3. Use Claude Code to generate visualizations")
+        print("  3. Use Claude Code to generate visualizations")
 
         return 0
 
@@ -97,10 +96,10 @@ def cmd_list(args):
     for project in projects:
         print(f"  - {project}")
 
-    print(f"\nTo work with a project:")
-    print(f"  1. Add Excel files to resources/<project_name>/")
-    print(f"  2. Convert: excel-to-graph convert resources/<project_name>")
-    print(f"  3. Use Claude Code for visualizations")
+    print("\nTo work with a project:")
+    print("  1. Add Excel files to resources/<project_name>/")
+    print("  2. Convert: excel-to-graph convert resources/<project_name>")
+    print("  3. Use Claude Code for visualizations")
 
     return 0
 
@@ -145,7 +144,9 @@ def cmd_visualize(args):
         visualizer = GraphVisualizer(df, output_dir)
 
         # Determine which charts to generate
-        generate_all = args.all or not any([args.timeline, args.bar, args.distribution, args.heatmap])
+        generate_all = args.all or not any(
+            [args.timeline, args.bar, args.distribution, args.heatmap]
+        )
 
         generated_files = []
 
@@ -199,7 +200,7 @@ For more advanced usage, use Claude Code with natural language:
   claude
   > "Generate visualizations from my Excel data"
   > "Convert all Excel files in resources/my_project to CSV"
-        """
+        """,
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
@@ -208,12 +209,12 @@ For more advanced usage, use Claude Code with natural language:
     parser_init = subparsers.add_parser(
         "init",
         help="Initialize a new project",
-        description="Create a new project with organized directory structure"
+        description="Create a new project with organized directory structure",
     )
     parser_init.add_argument(
         "project_name",
         type=str,
-        help="Name of the project (letters, numbers, hyphens, underscores only)"
+        help="Name of the project (letters, numbers, hyphens, underscores only)",
     )
     parser_init.set_defaults(func=cmd_init)
 
@@ -221,26 +222,23 @@ For more advanced usage, use Claude Code with natural language:
     parser_convert = subparsers.add_parser(
         "convert",
         help="Convert Excel files to CSV",
-        description="Convert Excel files to CSV for easier inspection by Claude"
+        description="Convert Excel files to CSV for easier inspection by Claude",
     )
     parser_convert.add_argument(
-        "path",
-        type=str,
-        help="Path to Excel file or directory containing Excel files"
+        "path", type=str, help="Path to Excel file or directory containing Excel files"
     )
     parser_convert.add_argument(
-        "-o", "--output",
+        "-o",
+        "--output",
         type=str,
         default=None,
-        help="Output directory for CSV files (default: same as source)"
+        help="Output directory for CSV files (default: same as source)",
     )
     parser_convert.set_defaults(func=cmd_convert)
 
     # List command
     parser_list = subparsers.add_parser(
-        "list",
-        help="List all projects",
-        description="Show all initialized projects"
+        "list", help="List all projects", description="Show all initialized projects"
     )
     parser_list.set_defaults(func=cmd_list)
 
@@ -248,59 +246,32 @@ For more advanced usage, use Claude Code with natural language:
     parser_viz = subparsers.add_parser(
         "visualize",
         help="Generate visualizations from Excel data",
-        description="Generate charts and graphs from Excel data"
+        description="Generate charts and graphs from Excel data",
+    )
+    parser_viz.add_argument("file", type=str, help="Path to Excel file")
+    parser_viz.add_argument(
+        "-s", "--sheet", type=str, default=None, help="Sheet name to process (default: first sheet)"
     )
     parser_viz.add_argument(
-        "file",
-        type=str,
-        help="Path to Excel file"
+        "-o", "--output", type=str, default="outputs", help="Output directory (default: outputs)"
     )
     parser_viz.add_argument(
-        "-s", "--sheet",
-        type=str,
-        default=None,
-        help="Sheet name to process (default: first sheet)"
-    )
-    parser_viz.add_argument(
-        "-o", "--output",
-        type=str,
-        default="outputs",
-        help="Output directory (default: outputs)"
-    )
-    parser_viz.add_argument(
-        "-f", "--format",
+        "-f",
+        "--format",
         choices=["png", "pdf", "html"],
         default="png",
-        help="Output format (default: png)"
+        help="Output format (default: png)",
     )
 
     # Chart type options for visualize
     chart_group = parser_viz.add_argument_group("chart types")
+    chart_group.add_argument("--timeline", action="store_true", help="Generate timeline chart")
+    chart_group.add_argument("--bar", action="store_true", help="Generate bar chart")
     chart_group.add_argument(
-        "--timeline",
-        action="store_true",
-        help="Generate timeline chart"
+        "--distribution", action="store_true", help="Generate distribution plot"
     )
-    chart_group.add_argument(
-        "--bar",
-        action="store_true",
-        help="Generate bar chart"
-    )
-    chart_group.add_argument(
-        "--distribution",
-        action="store_true",
-        help="Generate distribution plot"
-    )
-    chart_group.add_argument(
-        "--heatmap",
-        action="store_true",
-        help="Generate heatmap"
-    )
-    chart_group.add_argument(
-        "--all",
-        action="store_true",
-        help="Generate all chart types"
-    )
+    chart_group.add_argument("--heatmap", action="store_true", help="Generate heatmap")
+    chart_group.add_argument("--all", action="store_true", help="Generate all chart types")
     parser_viz.set_defaults(func=cmd_visualize)
 
     # Parse arguments

@@ -8,15 +8,14 @@ with proper support for international characters (French accents, etc.).
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib
-import plotly.graph_objects as go
 import plotly.express as px
 from pathlib import Path
-from typing import Optional, List, Literal
+from typing import Optional, Literal
 import seaborn as sns
 
 # Set matplotlib to use a font that supports international characters
-matplotlib.rcParams['font.family'] = 'DejaVu Sans'
-matplotlib.rcParams['axes.unicode_minus'] = False
+matplotlib.rcParams["font.family"] = "DejaVu Sans"
+matplotlib.rcParams["axes.unicode_minus"] = False
 
 
 class GraphVisualizer:
@@ -44,7 +43,7 @@ class GraphVisualizer:
         self,
         title: str = "Timeline - Interventions par Personne",
         output_name: Optional[str] = None,
-        format: Literal["png", "pdf", "html"] = "png"
+        format: Literal["png", "pdf", "html"] = "png",
     ) -> str:
         """
         Create a timeline/Gantt-style chart.
@@ -64,7 +63,7 @@ class GraphVisualizer:
             ValueError: If required columns are missing
         """
         # Validate required columns
-        if 'speak_time' not in self.data.columns or 'speak_person' not in self.data.columns:
+        if "speak_time" not in self.data.columns or "speak_person" not in self.data.columns:
             raise ValueError("Timeline chart requires 'speak_time' and 'speak_person' columns")
 
         if format == "html":
@@ -73,34 +72,33 @@ class GraphVisualizer:
             return self._timeline_chart_matplotlib(title, output_name, format)
 
     def _timeline_chart_matplotlib(
-        self,
-        title: str,
-        output_name: Optional[str],
-        format: str
+        self, title: str, output_name: Optional[str], format: str
     ) -> str:
         """Create timeline chart using matplotlib."""
         fig, ax = plt.subplots(figsize=(14, 8))
 
         # Prepare data: group by person and time
-        timeline_data = self.data.groupby(['speak_person', 'speak_time']).size().reset_index(name='count')
+        timeline_data = (
+            self.data.groupby(["speak_person", "speak_time"]).size().reset_index(name="count")
+        )
 
         # Create y-positions for each person
-        persons = timeline_data['speak_person'].unique()
+        persons = timeline_data["speak_person"].unique()
         person_positions = {person: i for i, person in enumerate(persons)}
 
         # Plot each intervention
         for _, row in timeline_data.iterrows():
-            person = row['speak_person']
-            time = row['speak_time']
+            person = row["speak_person"]
+            time = row["speak_time"]
             y_pos = person_positions[person]
 
-            ax.scatter(time, y_pos, s=200, alpha=0.6, c=f'C{y_pos % 10}')
+            ax.scatter(time, y_pos, s=200, alpha=0.6, c=f"C{y_pos % 10}")
 
         ax.set_yticks(range(len(persons)))
         ax.set_yticklabels(persons)
-        ax.set_xlabel('Temps de Parole', fontsize=12)
-        ax.set_ylabel('Personne', fontsize=12)
-        ax.set_title(title, fontsize=14, fontweight='bold')
+        ax.set_xlabel("Temps de Parole", fontsize=12)
+        ax.set_ylabel("Personne", fontsize=12)
+        ax.set_title(title, fontsize=14, fontweight="bold")
         ax.grid(True, alpha=0.3)
 
         plt.tight_layout()
@@ -109,7 +107,7 @@ class GraphVisualizer:
         if output_name is None:
             output_name = "timeline_chart"
         output_path = self.output_dir / f"{output_name}.{format}"
-        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+        plt.savefig(output_path, dpi=300, bbox_inches="tight")
         plt.close()
 
         return str(output_path)
@@ -117,24 +115,22 @@ class GraphVisualizer:
     def _timeline_chart_plotly(self, title: str, output_name: Optional[str]) -> str:
         """Create interactive timeline chart using plotly."""
         # Prepare data
-        timeline_data = self.data.groupby(['speak_person', 'speak_time']).size().reset_index(name='count')
+        timeline_data = (
+            self.data.groupby(["speak_person", "speak_time"]).size().reset_index(name="count")
+        )
 
         fig = px.scatter(
             timeline_data,
-            x='speak_time',
-            y='speak_person',
-            size='count',
-            color='speak_person',
+            x="speak_time",
+            y="speak_person",
+            size="count",
+            color="speak_person",
             title=title,
-            labels={'speak_time': 'Temps de Parole', 'speak_person': 'Personne'},
-            hover_data=['count']
+            labels={"speak_time": "Temps de Parole", "speak_person": "Personne"},
+            hover_data=["count"],
         )
 
-        fig.update_layout(
-            showlegend=True,
-            height=600,
-            font=dict(size=12)
-        )
+        fig.update_layout(showlegend=True, height=600, font=dict(size=12))
 
         # Save file
         if output_name is None:
@@ -148,7 +144,7 @@ class GraphVisualizer:
         self,
         title: str = "Nombre d'Interventions par Personne",
         output_name: Optional[str] = None,
-        format: Literal["png", "pdf", "html"] = "png"
+        format: Literal["png", "pdf", "html"] = "png",
     ) -> str:
         """
         Create a bar chart showing speaking frequency per person.
@@ -162,18 +158,18 @@ class GraphVisualizer:
             Path to the saved file
         """
         # Count interventions per person
-        speaking_counts = self.data.groupby('speak_person').size().reset_index(name='count')
-        speaking_counts = speaking_counts.sort_values('count', ascending=False)
+        speaking_counts = self.data.groupby("speak_person").size().reset_index(name="count")
+        speaking_counts = speaking_counts.sort_values("count", ascending=False)
 
         if format == "html":
             fig = px.bar(
                 speaking_counts,
-                x='speak_person',
-                y='count',
+                x="speak_person",
+                y="count",
                 title=title,
-                labels={'speak_person': 'Personne', 'count': 'Nombre d\'Interventions'},
-                color='count',
-                color_continuous_scale='Viridis'
+                labels={"speak_person": "Personne", "count": "Nombre d'Interventions"},
+                color="count",
+                color_continuous_scale="Viridis",
             )
 
             if output_name is None:
@@ -183,24 +179,24 @@ class GraphVisualizer:
         else:
             fig, ax = plt.subplots(figsize=(12, 6))
 
-            bars = ax.bar(speaking_counts['speak_person'], speaking_counts['count'])
+            bars = ax.bar(speaking_counts["speak_person"], speaking_counts["count"])
 
             # Color bars with gradient
-            colors = plt.cm.viridis(speaking_counts['count'] / speaking_counts['count'].max())
+            colors = plt.cm.viridis(speaking_counts["count"] / speaking_counts["count"].max())
             for bar, color in zip(bars, colors):
                 bar.set_color(color)
 
-            ax.set_xlabel('Personne', fontsize=12)
-            ax.set_ylabel('Nombre d\'Interventions', fontsize=12)
-            ax.set_title(title, fontsize=14, fontweight='bold')
-            ax.grid(True, alpha=0.3, axis='y')
-            plt.xticks(rotation=45, ha='right')
+            ax.set_xlabel("Personne", fontsize=12)
+            ax.set_ylabel("Nombre d'Interventions", fontsize=12)
+            ax.set_title(title, fontsize=14, fontweight="bold")
+            ax.grid(True, alpha=0.3, axis="y")
+            plt.xticks(rotation=45, ha="right")
             plt.tight_layout()
 
             if output_name is None:
                 output_name = "bar_chart_speaking_time"
             output_path = self.output_dir / f"{output_name}.{format}"
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
         return str(output_path)
@@ -209,7 +205,7 @@ class GraphVisualizer:
         self,
         title: str = "Distribution des Interventions par Temps",
         output_name: Optional[str] = None,
-        format: Literal["png", "pdf", "html"] = "png"
+        format: Literal["png", "pdf", "html"] = "png",
     ) -> str:
         """
         Create a distribution plot showing intervention patterns over time.
@@ -223,16 +219,16 @@ class GraphVisualizer:
             Path to the saved file
         """
         # Count interventions per time period
-        time_counts = self.data.groupby('speak_time').size().reset_index(name='count')
+        time_counts = self.data.groupby("speak_time").size().reset_index(name="count")
 
         if format == "html":
             fig = px.line(
                 time_counts,
-                x='speak_time',
-                y='count',
+                x="speak_time",
+                y="count",
                 title=title,
-                labels={'speak_time': 'Temps', 'count': 'Nombre d\'Interventions'},
-                markers=True
+                labels={"speak_time": "Temps", "count": "Nombre d'Interventions"},
+                markers=True,
             )
 
             if output_name is None:
@@ -242,19 +238,25 @@ class GraphVisualizer:
         else:
             fig, ax = plt.subplots(figsize=(12, 6))
 
-            ax.plot(time_counts['speak_time'], time_counts['count'], marker='o', linewidth=2, markersize=8)
-            ax.fill_between(time_counts['speak_time'], time_counts['count'], alpha=0.3)
+            ax.plot(
+                time_counts["speak_time"],
+                time_counts["count"],
+                marker="o",
+                linewidth=2,
+                markersize=8,
+            )
+            ax.fill_between(time_counts["speak_time"], time_counts["count"], alpha=0.3)
 
-            ax.set_xlabel('Temps', fontsize=12)
-            ax.set_ylabel('Nombre d\'Interventions', fontsize=12)
-            ax.set_title(title, fontsize=14, fontweight='bold')
+            ax.set_xlabel("Temps", fontsize=12)
+            ax.set_ylabel("Nombre d'Interventions", fontsize=12)
+            ax.set_title(title, fontsize=14, fontweight="bold")
             ax.grid(True, alpha=0.3)
             plt.tight_layout()
 
             if output_name is None:
                 output_name = "distribution_plot"
             output_path = self.output_dir / f"{output_name}.{format}"
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
         return str(output_path)
@@ -263,7 +265,7 @@ class GraphVisualizer:
         self,
         title: str = "Carte Thermique - Personne × Temps",
         output_name: Optional[str] = None,
-        format: Literal["png", "pdf", "html"] = "png"
+        format: Literal["png", "pdf", "html"] = "png",
     ) -> str:
         """
         Create a heatmap showing intervention intensity per person over time.
@@ -277,15 +279,19 @@ class GraphVisualizer:
             Path to the saved file
         """
         # Create pivot table
-        heatmap_data = self.data.groupby(['speak_person', 'speak_time']).size().reset_index(name='count')
-        pivot_data = heatmap_data.pivot(index='speak_person', columns='speak_time', values='count').fillna(0)
+        heatmap_data = (
+            self.data.groupby(["speak_person", "speak_time"]).size().reset_index(name="count")
+        )
+        pivot_data = heatmap_data.pivot(
+            index="speak_person", columns="speak_time", values="count"
+        ).fillna(0)
 
         if format == "html":
             fig = px.imshow(
                 pivot_data,
                 title=title,
                 labels=dict(x="Temps", y="Personne", color="Interventions"),
-                color_continuous_scale="YlOrRd"
+                color_continuous_scale="YlOrRd",
             )
 
             if output_name is None:
@@ -298,21 +304,21 @@ class GraphVisualizer:
             sns.heatmap(
                 pivot_data,
                 annot=True,
-                fmt='.0f',
-                cmap='YlOrRd',
+                fmt=".0f",
+                cmap="YlOrRd",
                 ax=ax,
-                cbar_kws={'label': 'Nombre d\'Interventions'}
+                cbar_kws={"label": "Nombre d'Interventions"},
             )
 
-            ax.set_xlabel('Temps', fontsize=12)
-            ax.set_ylabel('Personne', fontsize=12)
-            ax.set_title(title, fontsize=14, fontweight='bold')
+            ax.set_xlabel("Temps", fontsize=12)
+            ax.set_ylabel("Personne", fontsize=12)
+            ax.set_title(title, fontsize=14, fontweight="bold")
             plt.tight_layout()
 
             if output_name is None:
                 output_name = "heatmap_person_time"
             output_path = self.output_dir / f"{output_name}.{format}"
-            plt.savefig(output_path, dpi=300, bbox_inches='tight')
+            plt.savefig(output_path, dpi=300, bbox_inches="tight")
             plt.close()
 
         return str(output_path)
