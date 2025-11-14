@@ -1,8 +1,10 @@
 # Excel to Graph
 
-Generate beautiful graphs from Excel timeline data using Python and Claude Code.
+**AI-Assisted Excel to Graph for Simplifying the Life of Many Social Science Ph.D. Students**
 
-This project helps you visualize timeline data from Excel spreadsheets with columns like `speak_time`, `speak_person`, and multiple `idea_X` columns.
+Generate beautiful graphs from Excel timeline data using Python and Claude Code - no programming experience required!
+
+This project helps social science researchers visualize timeline data from Excel spreadsheets with columns like `speak_time`, `speak_person`, and multiple `idea_X` columns. Perfect for analyzing interviews, focus groups, discourse analysis, and other qualitative data.
 
 ## 🎯 Features
 
