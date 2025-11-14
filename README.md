@@ -13,8 +13,8 @@ This project helps social science researchers visualize data from Excel spreadsh
 - [🎯 Features](#-features)
 - [📋 Prerequisites](#-prerequisites)
 - [🚀 Complete Setup Guide](#-complete-setup-guide)
-  - [Step 1: Install WSL (Windows Subsystem for Linux)](#step-1-install-wsl-windows-subsystem-for-linux)
-  - [Step 2: Setup Git in WSL](#step-2-setup-git-in-wsl)
+  - [Step 1 (Optional): Install WSL (Windows Subsystem for Linux)](#step-1-optional-install-wsl-windows-subsystem-for-linux)
+  - [Step 2 (Optional): Setup Git in WSL](#step-2-optional-setup-git-in-wsl)
   - [Step 3: Clone This Repository](#step-3-clone-this-repository)
   - [Step 4: Run Complete Setup](#step-4-run-complete-setup)
   - [Step 5: Authenticate Claude Code](#step-5-authenticate-claude-code)
@@ -49,7 +49,9 @@ Before starting, you need:
 
 ## 🚀 Complete Setup Guide
 
-### Step 1: Install WSL (Windows Subsystem for Linux)
+**Already have WSL and Git installed?** → [Skip to Step 3: Clone This Repository](#step-3-clone-this-repository)
+
+### Step 1 (Optional): Install WSL (Windows Subsystem for Linux)
 
 If you don't have WSL installed yet:
 
@@ -85,7 +87,7 @@ If you don't have WSL installed yet:
    - Press `Enter` after each command to run it
    - The terminal is your friend!
 
-### Step 2: Setup Git in WSL
+### Step 2 (Optional): Setup Git in WSL
 
 Open your WSL terminal (Ubuntu) and configure git:
 

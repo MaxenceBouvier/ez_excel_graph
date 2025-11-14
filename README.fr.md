@@ -13,8 +13,8 @@ Ce projet aide les chercheurs en sciences sociales à visualiser les données de
 - [🎯 Fonctionnalités](#-fonctionnalités)
 - [📋 Prérequis](#-prérequis)
 - [🚀 Guide d'Installation Complet](#-guide-dinstallation-complet)
-  - [Étape 1 : Installer WSL (Windows Subsystem for Linux)](#étape-1--installer-wsl-windows-subsystem-for-linux)
-  - [Étape 2 : Configurer Git dans WSL](#étape-2--configurer-git-dans-wsl)
+  - [Étape 1 (Optionnel) : Installer WSL (Windows Subsystem for Linux)](#étape-1-optionnel--installer-wsl-windows-subsystem-for-linux)
+  - [Étape 2 (Optionnel) : Configurer Git dans WSL](#étape-2-optionnel--configurer-git-dans-wsl)
   - [Étape 3 : Cloner ce Dépôt](#étape-3--cloner-ce-dépôt)
   - [Étape 4 : Exécuter l'Installation Complète](#étape-4--exécuter-linstallation-complète)
   - [Étape 5 : Authentifier Claude Code](#étape-5--authentifier-claude-code)
@@ -49,7 +49,9 @@ Avant de commencer, vous avez besoin de :
 
 ## 🚀 Guide d'Installation Complet
 
-### Étape 1 : Installer WSL (Windows Subsystem for Linux)
+**Vous avez déjà WSL et Git installés ?** → [Passer à l'Étape 3 : Cloner ce Dépôt](#étape-3--cloner-ce-dépôt)
+
+### Étape 1 (Optionnel) : Installer WSL (Windows Subsystem for Linux)
 
 Si vous n'avez pas encore WSL installé :
 
@@ -85,7 +87,7 @@ Si vous n'avez pas encore WSL installé :
    - Appuyez sur `Entrée` après chaque commande pour l'exécuter
    - Le terminal est votre ami !
 
-### Étape 2 : Configurer Git dans WSL
+### Étape 2 (Optionnel) : Configurer Git dans WSL
 
 Ouvrez votre terminal WSL (Ubuntu) et configurez git :
 
