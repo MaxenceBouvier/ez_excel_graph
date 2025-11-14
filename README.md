@@ -106,6 +106,20 @@ Follow the authentication instructions. You can use either:
 - Your Claude.ai account (recommended)
 - Claude Console account with API access
 
+#### Optional: Setup Claude Code Permissions
+
+To avoid repeatedly approving common commands, you can copy the example settings file:
+
+```bash
+# Copy the example settings to your .claude directory
+cp .claude.settings.example.json .claude/settings.local.json
+
+# Update the path in the file to match your username
+# Edit line 41 to replace YOUR_USERNAME with your actual username
+```
+
+This allows Claude Code to run common commands (Python, git, file operations, etc.) without asking for approval each time.
+
 ### Step 6: Open in VSCode (Optional)
 
 For a better editing experience:
