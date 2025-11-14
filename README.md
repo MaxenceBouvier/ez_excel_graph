@@ -55,9 +55,14 @@ If you don't have WSL installed yet:
    - Press `Windows + X`
    - Select "Windows PowerShell (Admin)" or "Terminal (Admin)"
 
-2. **Install WSL with Ubuntu**
+2. **Install WSL with Ubuntu 24.04**
    ```powershell
-   wsl --install
+   wsl --install Ubuntu-24.04
+   ```
+
+   **Note:** If you already have WSL installed but need Ubuntu 24.04, use:
+   ```powershell
+   wsl --install -d Ubuntu-24.04
    ```
 
 3. **Restart your computer** when prompted
