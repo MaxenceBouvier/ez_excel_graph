@@ -150,6 +150,8 @@ Claude Code will typically prompt you to log in automatically on first startup. 
 - 📂 **Browse files** visually instead of using command-line
 - ✏️ **Edit files** with a friendly interface
 - 👀 **See your project structure** at a glance
+- 🤖 **Use Claude Code with a chat interface** - no terminal commands needed!
+- 📸 **Share screenshots** with Claude by copy/pasting images to get better help
 
 **Setup VSCode:**
 
@@ -169,6 +171,8 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    ```
 
 VSCode will open with full WSL integration! You can now drag and drop your Excel files into the `resources/` folder or any project subfolder.
+
+**Bonus:** Once in VSCode, you can access Claude Code through the command palette (`Ctrl+Shift+P`) and interact with it in a user-friendly chat interface. You can even paste screenshots of your data or errors to get more precise help!
 
 ### Step 7: Setup GitHub Authentication (Optional)
 
@@ -270,7 +274,46 @@ resources/
 
 ### Generating Graphs with Claude Code
 
-Start Claude Code and use natural language:
+#### 🌟 Using Claude Code in VSCode (Recommended!)
+
+**The easiest way to work with Claude Code is through the VSCode interface!** This gives you a user-friendly chat interface with powerful capabilities:
+
+✨ **Key Benefits:**
+- 💬 **Natural chat interface** - No command-line needed!
+- 📸 **Share screenshots** - Copy/paste images directly to show Claude what you need
+- 👁️ **Visual feedback** - See file changes and graphs as they're created
+- 🖱️ **Point and click** - Easy navigation between files
+
+**How to use Claude Code in VSCode:**
+
+1. **Open VSCode** (if you haven't already):
+   ```bash
+   code .
+   ```
+
+2. **Access Claude Code** through the VSCode command palette:
+   - Press `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac)
+   - Type "Claude Code" and select the appropriate command
+   - Or use the Claude Code icon in your VSCode sidebar (if available)
+
+3. **Chat naturally with Claude** in the VSCode panel:
+   ```
+   "Show me the structure of my Excel data in resources/"
+
+   "Create a bar chart from the data in resources/my-project/survey.xlsx"
+
+   "Help me understand this error message"
+   ```
+
+4. **Share screenshots to get better help!**
+   - Take a screenshot of your Excel data, error message, or graph
+   - Simply **copy and paste** the image into the Claude Code chat
+   - Claude can see the image and provide specific guidance
+   - Example: "Claude, here's a screenshot of my data [paste image]. Can you create a timeline visualization from columns B and C?"
+
+#### 💻 Using Claude Code from Terminal (Alternative)
+
+If you prefer the command-line or need to use terminal commands:
 
 ```bash
 # Activate Python environment
@@ -280,7 +323,7 @@ source .venv/bin/activate
 claude
 ```
 
-#### English Prompts:
+#### Example Prompts (English):
 ```
 "Show me the structure of my Excel data in resources/"
 
@@ -295,7 +338,7 @@ claude
 "Save all visualizations as PDF in outputs/my-project/"
 ```
 
-#### French Prompts (Français):
+#### Example Prompts (French / Français):
 ```
 "Montre-moi la structure de mes données Excel dans resources/"
 
@@ -307,6 +350,8 @@ claude
 
 "Crée une visualisation HTML interactive que je peux explorer"
 ```
+
+**💡 Pro Tip:** Whether using VSCode or terminal, you can ask Claude to explain anything in the project. Claude has full context of the codebase and can help troubleshoot, suggest improvements, and guide you through complex tasks!
 
 ### Using the Command-Line Interface
 

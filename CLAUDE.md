@@ -26,8 +26,8 @@ pre-commit install
 
 ### Code Quality
 ```bash
-# Format code with Black
-black src/
+# Format code with Ruff
+ruff format src/
 
 # Lint with Ruff
 ruff check src/
@@ -35,7 +35,7 @@ ruff check src/
 # Lint and auto-fix
 ruff check --fix src/
 
-# Run pre-commit hooks manually
+# Run pre-commit hooks manually (handles both formatting and linting)
 pre-commit run --all-files
 ```
 
@@ -153,9 +153,9 @@ When helping users, remind them their data is safe and never uploaded to GitHub.
 
 ## Code Style Standards
 
-- **Line length:** 100 characters (Black and Ruff configured)
+- **Line length:** 100 characters (configured in Ruff)
 - **Python version:** 3.10+ (type hints using modern syntax like `list[str]`)
-- **Formatting:** Black (enforced via pre-commit)
+- **Formatting:** Ruff (enforced via pre-commit and CI)
 - **Linting:** Ruff (enforced via pre-commit and CI)
 - **Type hints:** Used but not strictly enforced (mypy configured loosely)
 
@@ -163,7 +163,7 @@ When helping users, remind them their data is safe and never uploaded to GitHub.
 
 GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main/develop:
 
-1. **Lint job:** Black formatting check + Ruff linting
+1. **Lint job:** Ruff formatting check + Ruff linting
 2. **Test job:** Runs on Python 3.10, 3.11, 3.12
    - Smoke tests (import checks)
    - CLI command tests
