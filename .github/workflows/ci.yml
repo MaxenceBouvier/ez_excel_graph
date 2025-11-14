@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint:
+    name: Lint and Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install black ruff mypy
+
+    - name: Check code formatting with Black
+      run: black --check src/
+
+    - name: Lint with Ruff
+      run: ruff check src/
+
+    - name: Type check with mypy
+      run: mypy src/ --ignore-missing-imports
+
+  test:
+    name: Test on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Run tests
+      run: |
+        # Run pytest if tests exist
+        if [ -d "tests" ]; then
+          pytest tests/ -v --cov=src/excel_to_graph --cov-report=term-missing
+        fi
+        # Smoke tests
+        python -c "from excel_to_graph import ExcelReader, GraphVisualizer; print('✓ Package imports successfully')"
+        python -c "from excel_to_graph.cli import main; print('✓ CLI imports successfully')"
+
+    - name: Test CLI commands
+      run: |
+        excel-to-graph --help
+        excel-to-graph init --help
+        excel-to-graph convert --help
+        excel-to-graph list --help
+
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build
+
+    - name: Build package
+      run: python -m build
+
+    - name: Check package
+      run: |
+        pip install twine
+        twine check dist/*
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist
+        path: dist/
