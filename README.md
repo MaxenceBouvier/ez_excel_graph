@@ -227,6 +227,8 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    - Click Install
    - A new Spark ⚡ icon will appear in your VSCode sidebar
 
+   ![Claude Code Extension](docs/images/claude-extension-logo.png)
+
 4. **Open the project from WSL terminal**
    ```bash
    code .

@@ -227,6 +227,8 @@ Claude Code vous invitera généralement à vous connecter automatiquement au pr
    - Cliquer sur Installer
    - Une nouvelle icône Spark ⚡ apparaîtra dans la barre latérale de VSCode
 
+   ![Extension Claude Code](docs/images/claude-extension-logo.png)
+
 4. **Ouvrir le projet depuis le terminal WSL**
    ```bash
    code .
