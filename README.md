@@ -126,14 +126,58 @@ This script will:
 
 **Note:** The script may ask for confirmation at certain steps. Just press Enter to continue.
 
+---
+
+**⚠️ IMPORTANT: Restart Your Terminal After Setup! ⚠️**
+
+After the setup script finishes, you **MUST** restart your terminal for the new commands to work:
+
+1. **Close the terminal window completely**
+2. **Open a new Ubuntu terminal**
+3. **Navigate back to the project:**
+   ```bash
+   cd ~/proj/excel_to_graph
+   ```
+
+**Why?** The setup script installs new programs (`claude` and `uv`), but your current terminal session doesn't know about them yet. Restarting the terminal fixes this.
+
+---
+
+**🔧 If Setup Failed or Had Errors:**
+
+If you saw errors like `uv: command not found` or `Virtual environment not found`, don't worry! Just:
+
+1. **Restart your terminal** (close and reopen Ubuntu)
+2. **Navigate back:**
+   ```bash
+   cd ~/proj/excel_to_graph
+   ```
+3. **Complete the Python setup:**
+   ```bash
+   ./scripts/setup_python.sh
+   ```
+
+This will finish what the main script started.
+
 ### Step 5: Authenticate Claude Code
 
-After setup completes:
+**Make sure you've restarted your terminal first!** (See Step 4 above)
+
+Start Claude Code:
 
 ```bash
 # Start Claude Code
 claude
 ```
+
+**If you get "command not found":**
+- You forgot to restart your terminal! Close the terminal and open a new one.
+- Or manually update your PATH:
+  ```bash
+  source ~/.bashrc
+  ```
+
+**Once `claude` starts:**
 
 Claude Code will typically prompt you to log in automatically on first startup. Just follow the authentication instructions on screen.
 
@@ -419,16 +463,67 @@ notepad.exe filename.txt
 
 ## 🔧 Troubleshooting
 
-### "command not found: claude"
+### Setup Script Issues
 
-After installing Claude Code, you may need to reload your shell:
+#### "command not found: claude" or "command not found: uv"
+
+**This is the most common issue!** It happens because the setup script installed new programs, but your terminal session hasn't loaded them yet.
+
+**Solution:**
+1. **Close your terminal completely**
+2. **Open a new Ubuntu terminal**
+3. **Try again:**
+   ```bash
+   cd ~/proj/excel_to_graph
+   claude --help
+   ```
+
+**Alternative (without restarting):**
 ```bash
 source ~/.bashrc
 ```
 
-Or simply close and reopen your terminal.
+#### "uv: command not found" during setup_all.sh
 
-### "Virtual environment not activated"
+If the setup script showed this error, it means the Python environment wasn't created. This is normal - it happens because `uv` was installed but not loaded yet.
+
+**Solution:**
+1. **Restart your terminal** (close and reopen)
+2. **Navigate back:**
+   ```bash
+   cd ~/proj/excel_to_graph
+   ```
+3. **Run the Python setup:**
+   ```bash
+   ./scripts/setup_python.sh
+   ```
+
+This completes the setup!
+
+#### "Virtual environment not found" at end of setup
+
+This happens if the Python setup step failed (usually because of the `uv` issue above).
+
+**Solution:** Same as above - restart terminal and run `./scripts/setup_python.sh`
+
+#### Setup script seems stuck or asks for password
+
+- If it asks for your Ubuntu password, type it and press Enter (you won't see the password as you type - this is normal!)
+- Press Enter when prompted to continue
+- Press Ctrl+C if you need to cancel
+
+#### Want to re-run the setup script?
+
+**Yes, it's safe!** The script checks what's already installed and won't break anything. You can run `./scripts/setup_all.sh` as many times as needed.
+
+**Better approach:** If only the Python part failed, just run:
+```bash
+./scripts/setup_python.sh
+```
+
+### Usage Issues
+
+#### "Virtual environment not activated"
 
 Always activate the Python environment before using the tools:
 ```bash
@@ -437,16 +532,48 @@ source .venv/bin/activate
 
 You'll see `(.venv)` in your prompt when activated.
 
-### "Excel file not found"
+#### "Excel file not found"
 
 Make sure your Excel files are in the `resources/` directory:
 ```bash
 ls resources/
 ```
 
-### Git won't let me commit
+#### Git won't let me commit
 
 If you try to commit an Excel file (except the template), the pre-commit hook will block it. This is intentional to protect your data privacy!
+
+### VSCode Issues
+
+#### "code: command not found"
+
+VSCode needs to be installed on **Windows**, not in WSL:
+
+1. Download from https://code.visualstudio.com/ (Windows version)
+2. Install the "Remote - WSL" extension in VSCode
+3. Then from WSL terminal: `code .`
+
+**Note:** VSCode is optional - you can use any text editor you prefer!
+
+### Still Having Issues?
+
+1. **Read the error message carefully** - it often tells you what's wrong
+2. **Check you're in the right directory:**
+   ```bash
+   pwd
+   # Should show: /home/your-username/proj/excel_to_graph
+   ```
+3. **Verify Python environment exists:**
+   ```bash
+   ls .venv
+   # Should show files/directories
+   ```
+4. **Ask Claude Code for help:**
+   ```bash
+   claude
+   > "I'm getting this error: [paste error message]"
+   ```
+5. **Create a GitHub issue** with your error details
 
 ## 🤝 Contributing & Getting Help
 
