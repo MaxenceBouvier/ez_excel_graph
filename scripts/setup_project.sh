@@ -40,14 +40,35 @@ mkdir -p outputs
 echo -e "${GREEN}✓ Outputs directory ready${NC}"
 
 # Create working branch for development
-if git rev-parse --verify graph-work &>/dev/null; then
-    echo -e "${YELLOW}⚠ Branch 'graph-work' already exists${NC}"
+echo ""
+echo -e "${BLUE}Let's create a working branch for you!${NC}"
+echo "The branch will be named: ${YELLOW}user/<branch_name>${NC}"
+echo ""
+read -p "Enter your branch name (e.g., 'my-graphs', 'jan-2024-study'): " BRANCH_NAME
+
+# Validate branch name is not empty
+while [ -z "$BRANCH_NAME" ]; do
+    echo -e "${RED}Branch name cannot be empty!${NC}"
+    read -p "Enter your branch name: " BRANCH_NAME
+done
+
+# Create full branch name with user/ prefix
+FULL_BRANCH_NAME="user/$BRANCH_NAME"
+
+# Check if branch already exists
+if git rev-parse --verify "$FULL_BRANCH_NAME" &>/dev/null; then
+    echo -e "${YELLOW}⚠ Branch '$FULL_BRANCH_NAME' already exists${NC}"
     echo "Current branch: $(git branch --show-current)"
+    read -p "Do you want to switch to it? (y/n): " SWITCH_BRANCH
+    if [[ "$SWITCH_BRANCH" == "y" || "$SWITCH_BRANCH" == "Y" ]]; then
+        git checkout "$FULL_BRANCH_NAME"
+        echo -e "${GREEN}✓ Switched to branch '$FULL_BRANCH_NAME'${NC}"
+    fi
 else
     echo ""
-    echo "Creating working branch 'graph-work'..."
-    git checkout -b graph-work
-    echo -e "${GREEN}✓ Switched to branch 'graph-work'${NC}"
+    echo "Creating working branch '$FULL_BRANCH_NAME'..."
+    git checkout -b "$FULL_BRANCH_NAME"
+    echo -e "${GREEN}✓ Switched to branch '$FULL_BRANCH_NAME'${NC}"
 fi
 
 echo ""

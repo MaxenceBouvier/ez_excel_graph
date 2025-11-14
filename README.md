@@ -42,8 +42,18 @@ If you don't have WSL installed yet:
 
 4. **Create your Linux user account**
    - After restart, Ubuntu will open automatically
+   - If Ubuntu doesn't open automatically:
+     - Press `Windows` key and type "Ubuntu"
+     - Click on "Ubuntu" (or "Ubuntu 24.04 LTS")
+     - This is also how you'll start Ubuntu in the future!
    - You'll be asked to create a username and password
    - Remember these credentials!
+
+5. **About the terminal commands below**
+   - All commands that follow must be typed in the Ubuntu terminal
+   - Don't be frightened - just copy and paste them one by one
+   - Press `Enter` after each command to run it
+   - The terminal is your friend!
 
 ### Step 2: Setup Git in WSL
 
@@ -101,32 +111,25 @@ After setup completes:
 ```bash
 # Start Claude Code
 claude
-
-# In the Claude Code prompt, authenticate
-/login
 ```
 
-Follow the authentication instructions. You can use either:
-- Your Claude.ai account (recommended)
-- Claude Console account with API access
+Claude Code will typically prompt you to log in automatically on first startup. Just follow the authentication instructions on screen.
 
-#### Optional: Setup Claude Code Permissions
+**IMPORTANT:** Use your **Claude.ai account** (the free web version). Do NOT use "Claude Console account with API access" as this option is paid and will charge you money!
 
-To avoid repeatedly approving common commands, you can copy the example settings file:
+**Note:** If Claude doesn't prompt automatically, you can manually trigger authentication with `/login`
 
-```bash
-# Copy the example settings to your .claude directory
-cp .claude.settings.example.json .claude/settings.local.json
+**Permissions:** The setup script has already configured Claude Code to run common commands (Python, git, file operations, etc.) without asking for approval each time.
 
-# Update the path in the file to match your username
-# Edit line 41 to replace YOUR_USERNAME with your actual username
-```
+### Step 6: Open in VSCode (Highly Recommended!)
 
-This allows Claude Code to run common commands (Python, git, file operations, etc.) without asking for approval each time.
+**VSCode makes your life MUCH easier!** With VSCode you can:
+- 📁 **Drag and drop** your Excel files directly into the `resources/` folder
+- 📂 **Browse files** visually instead of using command-line
+- ✏️ **Edit files** with a friendly interface
+- 👀 **See your project structure** at a glance
 
-### Step 6: Open in VSCode (Optional)
-
-For a better editing experience:
+**Setup VSCode:**
 
 1. **Install VSCode on Windows** from https://code.visualstudio.com/
 
@@ -136,67 +139,78 @@ For a better editing experience:
    - Search for "Remote - WSL"
    - Install it
 
+   <img src="docs/images/image.png" alt="WSL Extension in VSCode Marketplace" width="600">
+
 3. **Open the project from WSL terminal**
    ```bash
    code .
    ```
 
-VSCode will open with full WSL integration!
+VSCode will open with full WSL integration! You can now drag and drop your Excel files into the `resources/` folder or any project subfolder.
 
 ## 📊 Using the Tool
 
 ### Working with Your Excel Data
 
-You have two options for organizing your work:
+**IMPORTANT:** This tool uses a **project-based workflow** to keep your work organized. Each research project gets its own folder.
 
-#### Option 1: Quick Start (Simple Use)
-
-Just add your Excel files directly to `resources/`:
-
-```bash
-# Add your file
-cp ~/my_data.xlsx resources/
-
-# Convert to CSV for easier inspection
-excel-to-graph convert resources/my_data.xlsx
-```
-
-#### Option 2: Project-Based (Recommended)
-
-For organized, multi-project work:
-
-```bash
-# Create a new project
-excel-to-graph init my-research-2024
-
-# Add Excel files to your project
-cp ~/survey_data.xlsx resources/my-research-2024/
-
-# Convert all Excel files in the project
-excel-to-graph convert resources/my-research-2024
-```
 
 **🔒 Privacy Note:** Your Excel files stay on your computer and are NEVER uploaded to GitHub!
 
-### Converting Excel to CSV
+#### Creating a New Project
 
-Claude Code can inspect CSV files more easily than Excel. Convert your files:
+```bash
+# Create a new project (choose a meaningful name)
+excel-to-graph init my-research-2024
+
+# This creates: resources/my-research-2024/
+```
+
+#### Adding Your Excel Files
+
+**With VSCode (easiest way):**
+1. Open VSCode with `code .`
+2. Navigate to `resources/my-research-2024/` in the file explorer
+3. Drag and drop your Excel files into the folder
+
+**Or with command-line:**
+```bash
+# Copy your Excel file to the project folder
+cp ~/my_data.xlsx resources/my-research-2024/
+```
+
+#### Converting to CSV
+
+Claude Code can inspect CSV files more easily than Excel:
 
 ```bash
 # Activate environment
 source .venv/bin/activate
 
-# Convert a single file
-excel-to-graph convert resources/my_data.xlsx
-
-# Convert all files in a project
-excel-to-graph convert resources/my-project/
-
-# List all your projects
-excel-to-graph list
+# Convert all Excel files in your project to CSV
+excel-to-graph convert resources/my-research-2024/
 ```
 
 Each Excel sheet becomes a separate CSV file: `<filename>_<sheetname>.csv`
+
+**🔒 Privacy Note:** Your Excel files stay on your computer and are NEVER uploaded to GitHub!
+
+#### Managing Multiple Projects
+
+```bash
+# List all your projects
+excel-to-graph list
+
+# Each project can have its own Excel files and outputs
+resources/
+├── project-1/
+│   ├── data.xlsx
+│   └── data_Sheet1.csv
+├── project-2/
+│   ├── survey.xlsx
+│   └── survey_Sheet1.csv
+└── ...
+```
 
 ### Generating Graphs with Claude Code
 
@@ -249,15 +263,11 @@ source .venv/bin/activate
 # Create a new project
 excel-to-graph init my-project
 
-# Convert Excel to CSV
-excel-to-graph convert resources/my_data.xlsx
+# Convert all Excel files in a project to CSV
 excel-to-graph convert resources/my-project/
 
 # List all projects
 excel-to-graph list
-
-# Generate visualizations (legacy timeline format)
-excel-to-graph visualize resources/data.xlsx --all
 
 # See all options
 excel-to-graph --help
