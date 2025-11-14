@@ -13,8 +13,8 @@ Ce projet aide les chercheurs en sciences sociales à visualiser les données de
 - [🎯 Fonctionnalités](#-fonctionnalités)
 - [📋 Prérequis](#-prérequis)
 - [🚀 Guide d'Installation Complet](#-guide-dinstallation-complet)
-  - [Étape 1 (Optionnel) : Installer WSL (Windows Subsystem for Linux)](#étape-1-optionnel--installer-wsl-windows-subsystem-for-linux)
-  - [Étape 2 (Optionnel) : Configurer Git dans WSL](#étape-2-optionnel--configurer-git-dans-wsl)
+  - [Étape 1 : Installer WSL (Windows Subsystem for Linux)](#étape-1--installer-wsl-windows-subsystem-for-linux)
+  - [Étape 2 : Configurer Git dans WSL](#étape-2--configurer-git-dans-wsl)
   - [Étape 3 : Cloner ce Dépôt](#étape-3--cloner-ce-dépôt)
   - [Étape 4 : Exécuter l'Installation Complète](#étape-4--exécuter-linstallation-complète)
   - [Étape 5 : Authentifier Claude Code](#étape-5--authentifier-claude-code)
@@ -51,9 +51,9 @@ Avant de commencer, vous avez besoin de :
 
 **Vous avez déjà WSL et Git installés ?** → [Passer à l'Étape 3 : Cloner ce Dépôt](#étape-3--cloner-ce-dépôt)
 
-### Étape 1 (Optionnel) : Installer WSL (Windows Subsystem for Linux)
+### Étape 1 : Installer WSL (Windows Subsystem for Linux)
 
-Si vous n'avez pas encore WSL installé :
+*Requis uniquement lors de la première installation. Ignorez si vous avez déjà WSL installé.*
 
 1. **Ouvrir PowerShell en tant qu'Administrateur**
    - Appuyez sur `Windows + X`
@@ -87,7 +87,9 @@ Si vous n'avez pas encore WSL installé :
    - Appuyez sur `Entrée` après chaque commande pour l'exécuter
    - Le terminal est votre ami !
 
-### Étape 2 (Optionnel) : Configurer Git dans WSL
+### Étape 2 : Configurer Git dans WSL
+
+*Requis uniquement lors de la première installation. Ignorez si vous avez déjà Git configuré.*
 
 Ouvrez votre terminal WSL (Ubuntu) et configurez git :
 
@@ -217,16 +219,22 @@ Claude Code vous invitera généralement à vous connecter automatiquement au pr
    - Rechercher "Remote - WSL"
    - L'installer
 
-   ![Extension WSL dans le Marketplace VSCode](docs/images/image.png)
+   ![Extension WSL dans le Marketplace VSCode](docs/images/vscode-remote-wsl-extension.png)
 
-3. **Ouvrir le projet depuis le terminal WSL**
+3. **Installer l'extension Claude Code**
+   - Dans VSCode, aller dans Extensions (Ctrl+Shift+X)
+   - Rechercher "Claude Code" (publié par Anthropic)
+   - Cliquer sur Installer
+   - Une nouvelle icône Spark ⚡ apparaîtra dans la barre latérale de VSCode
+
+4. **Ouvrir le projet depuis le terminal WSL**
    ```bash
    code .
    ```
 
 VSCode s'ouvrira avec une intégration WSL complète ! Vous pouvez maintenant glisser-déposer vos fichiers Excel dans le dossier `resources/` ou n'importe quel sous-dossier du projet.
 
-**Bonus :** Une fois dans VSCode, vous pouvez accéder à Claude Code via la palette de commandes (`Ctrl+Shift+P`) et interagir avec lui dans une interface de chat conviviale. Vous pouvez même coller des captures d'écran de vos données ou erreurs pour obtenir une aide plus précise !
+**Bonus :** Une fois l'extension Claude Code installée, cliquez sur l'icône Spark ⚡ dans la barre latérale pour ouvrir le panneau de chat Claude Code. Vous pouvez interagir avec lui dans une interface conviviale et même coller des captures d'écran de vos données ou erreurs pour obtenir une aide plus précise !
 
 ### Étape 7 : Configurer l'Authentification GitHub (Optionnel)
 

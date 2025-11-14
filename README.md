@@ -13,8 +13,8 @@ This project helps social science researchers visualize data from Excel spreadsh
 - [🎯 Features](#-features)
 - [📋 Prerequisites](#-prerequisites)
 - [🚀 Complete Setup Guide](#-complete-setup-guide)
-  - [Step 1 (Optional): Install WSL (Windows Subsystem for Linux)](#step-1-optional-install-wsl-windows-subsystem-for-linux)
-  - [Step 2 (Optional): Setup Git in WSL](#step-2-optional-setup-git-in-wsl)
+  - [Step 1: Install WSL (Windows Subsystem for Linux)](#step-1-install-wsl-windows-subsystem-for-linux)
+  - [Step 2: Setup Git in WSL](#step-2-setup-git-in-wsl)
   - [Step 3: Clone This Repository](#step-3-clone-this-repository)
   - [Step 4: Run Complete Setup](#step-4-run-complete-setup)
   - [Step 5: Authenticate Claude Code](#step-5-authenticate-claude-code)
@@ -51,9 +51,9 @@ Before starting, you need:
 
 **Already have WSL and Git installed?** → [Skip to Step 3: Clone This Repository](#step-3-clone-this-repository)
 
-### Step 1 (Optional): Install WSL (Windows Subsystem for Linux)
+### Step 1: Install WSL (Windows Subsystem for Linux)
 
-If you don't have WSL installed yet:
+*Required only on first-time setup. Skip if you already have WSL installed.*
 
 1. **Open PowerShell as Administrator**
    - Press `Windows + X`
@@ -87,7 +87,9 @@ If you don't have WSL installed yet:
    - Press `Enter` after each command to run it
    - The terminal is your friend!
 
-### Step 2 (Optional): Setup Git in WSL
+### Step 2: Setup Git in WSL
+
+*Required only on first-time setup. Skip if you already have Git configured.*
 
 Open your WSL terminal (Ubuntu) and configure git:
 
@@ -217,16 +219,22 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    - Search for "Remote - WSL"
    - Install it
 
-   ![WSL Extension in VSCode Marketplace](docs/images/image.png)
+   ![WSL Extension in VSCode Marketplace](docs/images/vscode-remote-wsl-extension.png)
 
-3. **Open the project from WSL terminal**
+3. **Install the Claude Code extension**
+   - In VSCode, go to Extensions (Ctrl+Shift+X)
+   - Search for "Claude Code" (published by Anthropic)
+   - Click Install
+   - A new Spark ⚡ icon will appear in your VSCode sidebar
+
+4. **Open the project from WSL terminal**
    ```bash
    code .
    ```
 
 VSCode will open with full WSL integration! You can now drag and drop your Excel files into the `resources/` folder or any project subfolder.
 
-**Bonus:** Once in VSCode, you can access Claude Code through the command palette (`Ctrl+Shift+P`) and interact with it in a user-friendly chat interface. You can even paste screenshots of your data or errors to get more precise help!
+**Bonus:** Once the Claude Code extension is installed, click the Spark ⚡ icon in the sidebar to open Claude Code's chat panel. You can interact with it in a user-friendly interface and even paste screenshots of your data or errors to get more precise help!
 
 ### Step 7: Setup GitHub Authentication (Optional)
 
