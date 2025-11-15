@@ -3,13 +3,24 @@
 
 set -e  # Exit on error
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-BOLD='\033[1m'
-NC='\033[0m' # No Color
+# Detect color support
+if [ -t 1 ] && command -v tput &> /dev/null && [ $(tput colors) -ge 8 ]; then
+    # Terminal supports colors
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    RED=$(tput setaf 1)
+    BLUE=$(tput setaf 4)
+    BOLD=$(tput bold)
+    NC=$(tput sgr0)
+else
+    # No color support, use plain text
+    GREEN=''
+    YELLOW=''
+    RED=''
+    BLUE=''
+    BOLD=''
+    NC=''
+fi
 
 echo -e "${BOLD}${BLUE}"
 echo "╔════════════════════════════════════════════════════════╗"
@@ -34,7 +45,7 @@ echo "  2. Initialize Git repository and install hooks"
 echo "  3. Install Claude Code CLI"
 echo "  4. Set up Python environment with uv"
 echo "  5. Check VSCode integration"
-echo "  6. Install project package and create working branch"
+echo "  6. Install project package"
 echo ""
 read -p "Press Enter to continue or Ctrl+C to cancel..."
 echo ""
@@ -77,6 +88,23 @@ run_setup "setup_vscode.sh" || { echo -e "${YELLOW}VSCode check had warnings, co
 # Step 6: Project Setup
 echo -e "${BOLD}Step 6/6: Final Project Setup${NC}"
 run_setup "setup_project.sh" || { echo -e "${RED}Project setup failed${NC}"; exit 1; }
+
+# Optional: Auto-update check setup
+echo ""
+echo -e "${BOLD}${BLUE}Optional: Daily Update Check${NC}"
+echo "Would you like to set up automatic daily checks for repository updates?"
+echo "This will safely fetch updates once per day and notify you if new changes are available."
+echo "(This does NOT auto-merge - it just notifies you when updates exist)"
+echo ""
+read -p "Enable daily update checks? [y/N]: " ENABLE_AUTO_UPDATE
+
+if [[ "$ENABLE_AUTO_UPDATE" == "y" || "$ENABLE_AUTO_UPDATE" == "Y" ]]; then
+    echo ""
+    run_setup "setup_auto_update_check.sh" || { echo -e "${YELLOW}Auto-update setup had warnings, continuing...${NC}"; }
+else
+    echo -e "${YELLOW}Skipping auto-update setup. You can enable it later with:${NC}"
+    echo "  ./scripts/setup_auto_update_check.sh"
+fi
 
 # Final summary
 echo ""

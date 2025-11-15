@@ -3,12 +3,24 @@
 
 set -e  # Exit on error
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Detect color support
+if [ -t 1 ] && command -v tput &> /dev/null && [ $(tput colors) -ge 8 ]; then
+    # Terminal supports colors
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    RED=$(tput setaf 1)
+    BLUE=$(tput setaf 4)
+    BOLD=$(tput bold)
+    NC=$(tput sgr0)
+else
+    # No color support, use plain text
+    GREEN=''
+    YELLOW=''
+    RED=''
+    BLUE=''
+    BOLD=''
+    NC=''
+fi
 
 echo -e "${BLUE}=== Development Environment Setup ===${NC}"
 echo ""

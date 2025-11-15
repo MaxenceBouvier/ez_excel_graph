@@ -3,12 +3,24 @@
 
 set -e  # Exit on error
 
-# Colors for output
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-RED='\033[0;31m'
-BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+# Detect color support
+if [ -t 1 ] && command -v tput &> /dev/null && [ $(tput colors) -ge 8 ]; then
+    # Terminal supports colors
+    GREEN=$(tput setaf 2)
+    YELLOW=$(tput setaf 3)
+    RED=$(tput setaf 1)
+    BLUE=$(tput setaf 4)
+    BOLD=$(tput bold)
+    NC=$(tput sgr0)
+else
+    # No color support, use plain text
+    GREEN=''
+    YELLOW=''
+    RED=''
+    BLUE=''
+    BOLD=''
+    NC=''
+fi
 
 echo -e "${BLUE}=== Project Setup ===${NC}"
 
@@ -38,38 +50,6 @@ fi
 # Create outputs directory if it doesn't exist
 mkdir -p outputs
 echo -e "${GREEN}✓ Outputs directory ready${NC}"
-
-# Create working branch for development
-echo ""
-echo -e "${BLUE}Let's create a working branch for you!${NC}"
-echo "The branch will be named: ${YELLOW}user/<branch_name>${NC}"
-echo ""
-read -p "Enter your branch name (e.g., 'my-graphs', 'jan-2024-study'): " BRANCH_NAME
-
-# Validate branch name is not empty
-while [ -z "$BRANCH_NAME" ]; do
-    echo -e "${RED}Branch name cannot be empty!${NC}"
-    read -p "Enter your branch name: " BRANCH_NAME
-done
-
-# Create full branch name with user/ prefix
-FULL_BRANCH_NAME="user/$BRANCH_NAME"
-
-# Check if branch already exists
-if git rev-parse --verify "$FULL_BRANCH_NAME" &>/dev/null; then
-    echo -e "${YELLOW}⚠ Branch '$FULL_BRANCH_NAME' already exists${NC}"
-    echo "Current branch: $(git branch --show-current)"
-    read -p "Do you want to switch to it? (y/n): " SWITCH_BRANCH
-    if [[ "$SWITCH_BRANCH" == "y" || "$SWITCH_BRANCH" == "Y" ]]; then
-        git checkout "$FULL_BRANCH_NAME"
-        echo -e "${GREEN}✓ Switched to branch '$FULL_BRANCH_NAME'${NC}"
-    fi
-else
-    echo ""
-    echo "Creating working branch '$FULL_BRANCH_NAME'..."
-    git checkout -b "$FULL_BRANCH_NAME"
-    echo -e "${GREEN}✓ Switched to branch '$FULL_BRANCH_NAME'${NC}"
-fi
 
 echo ""
 echo -e "${GREEN}=== Project setup complete! ===${NC}"

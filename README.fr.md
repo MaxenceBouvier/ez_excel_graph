@@ -20,6 +20,7 @@ Ce projet aide les chercheurs en sciences sociales à visualiser les données de
   - [Étape 5 : Authentifier Claude Code](#étape-5--authentifier-claude-code)
   - [Étape 6 : Ouvrir dans VSCode (Fortement Recommandé !)](#étape-6--ouvrir-dans-vscode-fortement-recommandé-)
   - [Étape 7 : Configurer l'Authentification GitHub (Optionnel)](#étape-7--configurer-lauthentification-github-optionnel)
+  - [Étape 8 : Configurer les Vérifications Automatiques de Mises à Jour (Optionnel)](#étape-8--configurer-les-vérifications-automatiques-de-mises-à-jour-optionnel)
 - [📊 Utilisation de l'Outil](#-utilisation-de-loutil)
   - [Travailler avec Vos Données Excel](#travailler-avec-vos-données-excel)
   - [Générer des Graphiques avec Claude Code](#générer-des-graphiques-avec-claude-code)
@@ -134,7 +135,7 @@ Ce script va :
 4. ✅ Configurer l'environnement Python avec uv
 5. ✅ Vérifier l'intégration VSCode
 6. ✅ Installer le package du projet
-7. ✅ Créer une branche de travail pour vous
+7. ✅ Optionnellement configurer les vérifications quotidiennes de mises à jour
 
 **Note :** Le script peut demander confirmation à certaines étapes. Appuyez simplement sur Entrée pour continuer.
 
@@ -292,6 +293,55 @@ C'est fait ! Maintenant vous pouvez pousser des modifications sans être invité
 - Créer des pull requests : `gh pr create`
 - Voir les issues : `gh issue list`
 
+### Étape 8 : Configurer les Vérifications Automatiques de Mises à Jour (Optionnel)
+
+**Restez à jour avec les dernières fonctionnalités et corrections de bugs !**
+
+Ce projet est activement maintenu, et nous ajoutons régulièrement de nouvelles fonctionnalités et améliorations. Vous pouvez configurer des vérifications quotidiennes automatiques pour être notifié lorsque des mises à jour sont disponibles.
+
+**Qu'est-ce que cela fait ?**
+- Vérifie les mises à jour du dépôt une fois par jour (9h00 du matin)
+- Vous notifie lorsque de nouveaux commits sont disponibles
+- **Ne fusionne PAS automatiquement** - vous informe simplement que des mises à jour existent
+- Sûr : Récupère uniquement les mises à jour, ne modifie jamais vos fichiers locaux
+- Fonctionne même avec des modifications non validées
+
+**Comment activer :**
+
+```bash
+# Exécuter le script de configuration
+./scripts/setup_auto_update_check.sh
+```
+
+Le script va :
+1. Configurer une tâche cron pour vérifier quotidiennement
+2. Demander de démarrer le service cron (requis sur WSL)
+3. Vous montrer comment le désactiver plus tard si nécessaire
+
+**Vérifier manuellement les mises à jour à tout moment :**
+
+```bash
+./scripts/check_updates.sh
+```
+
+Cela vous montrera :
+- Si votre dépôt est à jour
+- Combien de commits de retard vous avez
+- Un résumé des changements récents
+- Instructions pour mettre à jour avec `git pull`
+
+**Pour désactiver les vérifications automatiques plus tard :**
+
+```bash
+# Éditer votre crontab
+crontab -e
+
+# Supprimer la ligne contenant 'check_updates.sh'
+# Enregistrer et quitter
+```
+
+**Note WSL :** Sur WSL, le service cron doit être en cours d'exécution. Le script de configuration vous aidera à le démarrer et peut l'ajouter au démarrage automatique lorsque vous ouvrez votre terminal.
+
 ## 📊 Utilisation de l'Outil
 
 ### Travailler avec Vos Données Excel
@@ -407,22 +457,7 @@ source .venv/bin/activate
 claude
 ```
 
-#### Exemples de Prompts (Anglais) :
-```
-"Show me the structure of my Excel data in resources/"
-
-"Convert all Excel files in resources/interview-study/ to CSV"
-
-"Create a bar chart comparing column A values across all rows"
-
-"Generate a scatter plot of age vs response_time from survey_data.xlsx"
-
-"Make an interactive HTML visualization I can explore"
-
-"Save all visualizations as PDF in outputs/my-project/"
-```
-
-#### Exemples de Prompts (Français) :
+#### Exemples de Prompts :
 ```
 "Montre-moi la structure de mes données Excel dans resources/"
 
