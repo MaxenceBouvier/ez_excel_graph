@@ -140,6 +140,578 @@ Utilities for:
 - **Output organization:** Auto-organizes outputs by project and file type
 - **Filename sanitization:** Ensures filesystem-safe names
 
+### Available Graphic Libraries
+
+This project includes several powerful visualization libraries to create a wide variety of charts and graphs:
+
+#### Matplotlib (>=3.8.0)
+**Purpose:** Core static plotting library for Python
+**Best for:**
+- Static publication-quality figures (PNG, PDF)
+- Fine-grained control over every plot element
+- Traditional chart types: line plots, scatter plots, histograms, bar charts
+
+**Example use cases:**
+```python
+import matplotlib.pyplot as plt
+
+# Simple line plot
+plt.plot(x, y)
+plt.savefig('output.png')
+
+# Bar chart with custom styling
+fig, ax = plt.subplots()
+ax.bar(categories, values)
+ax.set_title('My Chart')
+plt.savefig('output.pdf')
+```
+
+#### Plotly (>=5.18.0)
+**Purpose:** Interactive web-based visualizations
+**Best for:**
+- Interactive HTML charts with zoom, pan, hover tooltips
+- 3D visualizations
+- Dashboards and web applications
+- Sharing visualizations that users can explore
+
+**Key features:**
+- Export to HTML for standalone interactive charts
+- Export to static images via Kaleido (PNG, PDF)
+- Built-in templates and themes
+
+**Example use cases:**
+```python
+import plotly.express as px
+import plotly.graph_objects as go
+
+# Quick interactive scatter plot
+fig = px.scatter(df, x='age', y='response_time')
+fig.write_html('outputs/project/html/scatter.html')
+
+# Custom interactive timeline
+fig = go.Figure(data=[go.Scatter(x=dates, y=values)])
+fig.update_layout(title='Timeline')
+fig.write_html('outputs/project/html/timeline.html')
+```
+
+#### Seaborn (>=0.13.0)
+**Purpose:** Statistical data visualization built on matplotlib
+**Best for:**
+- Statistical plots: distributions, regressions, correlations
+- Beautiful default styles and color palettes
+- Multi-plot grids (FacetGrid, PairGrid)
+- Heatmaps and cluster maps
+
+**Key features:**
+- Integrates seamlessly with pandas DataFrames
+- Automatic computation of statistical aggregates
+- Attractive default themes
+
+**Example use cases:**
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Distribution plot with multiple variables
+sns.histplot(data=df, x='age', hue='category')
+plt.savefig('outputs/project/png/distribution.png')
+
+# Correlation heatmap
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.savefig('outputs/project/png/correlation.png')
+
+# Box plot for statistical comparison
+sns.boxplot(data=df, x='group', y='score')
+plt.savefig('outputs/project/png/boxplot.png')
+```
+
+#### Dash (>=2.14.0)
+**Purpose:** Framework for building interactive web-based dashboards
+**Best for:**
+- Multi-page analytical dashboards
+- Real-time data monitoring
+- Interactive data exploration tools
+- Web applications with complex user interactions
+
+**Key features:**
+- Built on top of Plotly for interactive charts
+- Reactive callbacks for interactivity
+- Professional-looking layouts without HTML/CSS knowledge
+- Can be deployed as standalone web apps
+
+**Example use cases:**
+```python
+from dash import Dash, dcc, html, Input, Output
+import plotly.express as px
+
+# Simple interactive dashboard
+app = Dash(__name__)
+app.layout = html.Div([
+    dcc.Dropdown(id='dropdown', options=['Option A', 'Option B']),
+    dcc.Graph(id='graph')
+])
+
+@app.callback(Output('graph', 'figure'), Input('dropdown', 'value'))
+def update_graph(selected_value):
+    # Update graph based on user selection
+    fig = px.bar(df[df['category'] == selected_value], x='x', y='y')
+    return fig
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
+```
+
+#### Choosing the Right Library
+
+**Use Matplotlib when:**
+- You need static publication-quality images
+- You want fine control over every visual element
+- You're creating traditional academic charts
+
+**Use Plotly when:**
+- Users need to interact with the visualization (zoom, pan, hover)
+- You want to create standalone HTML visualizations
+- You're building 3D visualizations
+
+**Use Seaborn when:**
+- You're doing statistical analysis and visualization
+- You want beautiful plots with minimal code
+- You're exploring correlations and distributions in your data
+
+**Use Dash when:**
+- You want to build a complete interactive dashboard
+- You need multiple linked visualizations
+- You want users to filter/explore data through dropdowns and controls
+- You're creating a data exploration tool
+
+**Note:** All libraries work well with pandas DataFrames, making it easy to visualize Excel data after conversion.
+
+### Professional Visualization Standards
+
+**CRITICAL:** All visualizations created for users must meet academic/research publication standards. Always strive to make graphs both visually appealing AND professionally presentable.
+
+#### Required Elements for Every Graph
+
+**1. Axis Labels (MANDATORY)**
+- Every x-axis and y-axis MUST have a descriptive label with units if applicable
+- Labels should be clear and meaningful (not just column names)
+- Use proper capitalization and formatting
+
+```python
+# Matplotlib/Seaborn
+plt.xlabel('Time (minutes)', fontsize=12)
+plt.ylabel('Response Rate (%)', fontsize=12)
+
+# Plotly
+fig.update_xaxes(title_text='Time (minutes)')
+fig.update_yaxes(title_text='Response Rate (%)')
+```
+
+**2. Colorbar Labels (when applicable)**
+- If a heatmap or color-coded plot has a colorbar, it MUST be labeled
+- Indicate what the color scale represents with units
+
+```python
+# Matplotlib/Seaborn heatmap
+sns.heatmap(data, cbar_kws={'label': 'Correlation Coefficient'})
+
+# Plotly
+fig.update_layout(coloraxis_colorbar=dict(title='Frequency'))
+```
+
+**3. Meaningful Legends**
+- Include legends when multiple data series are plotted
+- Use descriptive labels, not just variable names
+- Position legends to avoid obscuring data
+
+```python
+# Matplotlib
+plt.legend(['Control Group', 'Treatment Group'], loc='best')
+
+# Plotly
+fig.update_traces(name='Control Group', selector=dict(type='scatter'))
+```
+
+**4. Graph Titles and Descriptions**
+- ALWAYS suggest a descriptive title to the user
+- Titles should be publication-ready (clear, concise, informative)
+- Offer to help refine the title for their specific research context
+
+```python
+# Good title suggestion workflow:
+# 1. Generate graph with a descriptive working title
+# 2. Suggest 2-3 alternative titles to the user
+# 3. Explain what the graph shows in 1-2 sentences (for figure caption)
+```
+
+#### Professional Styling Checklist
+
+When creating ANY visualization, ensure:
+
+- ✓ **Clear axis labels** with units (e.g., "Age (years)", "Temperature (°C)")
+- ✓ **Readable font sizes** (minimum 10-12pt for publication)
+- ✓ **Appropriate figure size** (not too small, not too large)
+- ✓ **High DPI for static images** (minimum 300 DPI for publications)
+- ✓ **Color schemes** that are colorblind-friendly when possible
+- ✓ **Grid lines** (if they improve readability)
+- ✓ **No overlapping text** or cluttered elements
+- ✓ **Consistent styling** across all graphs in a project
+
+#### Example: Professional vs Basic Graph
+
+**Basic (AVOID):**
+```python
+plt.scatter(df['col1'], df['col2'])
+plt.savefig('output.png')
+```
+
+**Professional (ALWAYS DO):**
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set professional style
+sns.set_style("whitegrid")
+plt.figure(figsize=(8, 6), dpi=300)
+
+# Create plot
+plt.scatter(df['age'], df['response_time'], alpha=0.6, s=50)
+
+# Add professional elements
+plt.xlabel('Participant Age (years)', fontsize=12)
+plt.ylabel('Response Time (seconds)', fontsize=12)
+plt.title('Response Time by Participant Age', fontsize=14, fontweight='bold')
+plt.grid(True, alpha=0.3)
+
+# Save with high quality
+plt.tight_layout()
+plt.savefig('outputs/project/png/age_vs_response.png', dpi=300, bbox_inches='tight')
+plt.close()
+```
+
+#### Suggesting Titles to Users
+
+After creating a graph, ALWAYS:
+
+1. **Propose a title** based on what the graph shows
+2. **Offer alternatives** (e.g., "Would you prefer 'Distribution of Interview Durations' or 'Interview Length Across Participants'?")
+3. **Suggest a caption** (e.g., "Figure caption: Scatter plot showing the relationship between participant age and response time (n=45). Pearson correlation r=0.67, p<0.001.")
+4. **Ask about context** (e.g., "Is this for a specific section of your paper? I can tailor the title accordingly.")
+
+#### Helper Function Template
+
+When creating visualizations, consider using this template:
+
+```python
+def create_professional_plot(data, x_col, y_col, plot_type='scatter',
+                            title=None, x_label=None, y_label=None,
+                            output_path=None):
+    """Create a publication-ready plot with all professional elements."""
+
+    plt.figure(figsize=(8, 6), dpi=300)
+
+    if plot_type == 'scatter':
+        plt.scatter(data[x_col], data[y_col], alpha=0.6)
+    elif plot_type == 'line':
+        plt.plot(data[x_col], data[y_col], linewidth=2)
+    # ... other plot types
+
+    # Professional elements
+    plt.xlabel(x_label or x_col, fontsize=12)
+    plt.ylabel(y_label or y_col, fontsize=12)
+    if title:
+        plt.title(title, fontsize=14, fontweight='bold')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    if output_path:
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+
+    return plt.gcf()
+```
+
+#### Code Documentation and Comments
+
+**CRITICAL:** All generated graph scripts must be **heavily commented** to serve as educational resources for users who may be learning Python and data visualization.
+
+**Three Core Principles:**
+1. **Code must work** - Test before providing to users
+2. **Follow best practices** - Use pandas DataFrames, avoid hard-coded values, use meaningful variable names
+3. **Be human-understandable** - Users should be able to learn from reading the code
+
+**Commenting Guidelines:**
+
+**1. File-Level Documentation**
+Every script should start with a comprehensive header:
+
+```python
+"""
+Graph Generation Script: [Descriptive Title]
+
+Purpose:
+    This script creates a [type] plot showing [what the visualization displays].
+    Generated for [project name] research project.
+
+Input:
+    - CSV file: [filename]
+    - Columns used: [list relevant columns]
+
+Output:
+    - PNG: outputs/[project]/png/[filename].png (300 DPI, publication-ready)
+    - PDF: outputs/[project]/pdf/[filename].pdf (vector format)
+
+Author: Generated by Claude Code
+Date: [YYYY-MM-DD]
+"""
+```
+
+**2. Section Headers**
+Break code into logical sections with clear headers:
+
+```python
+# =============================================================================
+# STEP 1: Load and Prepare Data
+# =============================================================================
+
+# =============================================================================
+# STEP 2: Create Visualization
+# =============================================================================
+
+# =============================================================================
+# STEP 3: Customize and Style
+# =============================================================================
+
+# =============================================================================
+# STEP 4: Save Output
+# =============================================================================
+```
+
+**3. Inline Comments for Every Major Operation**
+Explain WHAT and WHY, not just WHAT:
+
+```python
+# Load the CSV data using pandas
+# We use UTF-8 encoding to handle French accents (é, è, à, etc.)
+df = pd.read_csv('data.csv', encoding='utf-8')
+
+# Remove rows with missing response times
+# Missing data can skew correlation analysis
+df = df.dropna(subset=['response_time'])
+
+# Create figure with publication-ready size
+# 8x6 inches is standard for academic journals, 300 DPI ensures print quality
+plt.figure(figsize=(8, 6), dpi=300)
+```
+
+**4. Explain Parameters and Choices**
+Help users understand why specific values were chosen:
+
+```python
+# Alpha=0.6 makes points semi-transparent to show overlapping data
+# s=50 sets point size - adjust if you have many/few data points
+plt.scatter(df['age'], df['response_time'], alpha=0.6, s=50, color='steelblue')
+
+# Position legend in 'best' location to avoid covering data points
+# Try 'upper right', 'lower left', etc. if 'best' doesn't work well
+plt.legend(['Control Group', 'Treatment Group'], loc='best', fontsize=10)
+```
+
+**5. Educational Notes for Pandas Operations**
+Since users may be learning pandas, explain DataFrame operations:
+
+```python
+# Filter data to only include participants aged 18-65
+# The & operator combines conditions (both must be true)
+# Use | for "or" conditions
+adult_df = df[(df['age'] >= 18) & (df['age'] <= 65)]
+
+# Group by category and calculate mean response time
+# This creates a new DataFrame with category as index and mean values
+grouped = df.groupby('category')['response_time'].mean()
+
+# Sort values in descending order to show highest first
+# ascending=False means largest to smallest
+sorted_data = df.sort_values('response_time', ascending=False)
+```
+
+**6. Customization Suggestions**
+Provide guidance for users to modify the code:
+
+```python
+# === CUSTOMIZATION OPTIONS ===
+# Color scheme: Try 'viridis', 'plasma', 'coolwarm', or 'RdYlBu'
+# For colorblind-friendly palettes, use 'cividis' or 'colorblind'
+cmap = 'coolwarm'
+
+# Figure size: Adjust if needed for your paper layout
+# Common sizes: (8,6), (10,6), (12,8)
+figsize = (8, 6)
+
+# Font sizes: Increase if text appears too small
+title_fontsize = 14
+label_fontsize = 12
+```
+
+**7. Error Prevention and Debugging Help**
+Add comments that help users troubleshoot:
+
+```python
+# Check if required columns exist in the DataFrame
+required_cols = ['age', 'response_time']
+missing_cols = [col for col in required_cols if col not in df.columns]
+if missing_cols:
+    print(f"Error: Missing columns: {missing_cols}")
+    print(f"Available columns: {df.columns.tolist()}")
+    exit()
+
+# Display first few rows to verify data loaded correctly
+print("Data preview:")
+print(df.head())
+print(f"\nDataset size: {len(df)} rows, {len(df.columns)} columns")
+```
+
+**Complete Example: Professional, Well-Commented Script**
+
+```python
+"""
+Scatter Plot: Age vs Response Time Analysis
+
+Purpose:
+    Creates a scatter plot showing the relationship between participant age
+    and response time in the interview study.
+
+Input:
+    - CSV file: resources/interview-study/data_Sheet1.csv
+    - Columns: age (years), response_time (seconds)
+
+Output:
+    - PNG: outputs/interview-study/png/age_vs_response.png (300 DPI)
+    - PDF: outputs/interview-study/pdf/age_vs_response.pdf (vector)
+
+Author: Generated by Claude Code
+Date: 2025-11-15
+"""
+
+# =============================================================================
+# STEP 1: Import Required Libraries
+# =============================================================================
+
+import pandas as pd  # For data manipulation and analysis
+import matplotlib.pyplot as plt  # For creating static visualizations
+import seaborn as sns  # For enhanced styling and statistical plots
+import numpy as np  # For numerical operations
+
+# Set seaborn style for professional-looking plots
+# Other styles: 'darkgrid', 'white', 'dark', 'ticks'
+sns.set_style("whitegrid")
+
+# =============================================================================
+# STEP 2: Load and Prepare Data
+# =============================================================================
+
+# Load CSV data with UTF-8 encoding for international characters
+data_path = 'resources/interview-study/data_Sheet1.csv'
+df = pd.read_csv(data_path, encoding='utf-8')
+
+# Display data summary for verification
+print("Data loaded successfully!")
+print(f"Dataset size: {len(df)} participants\n")
+print("First 5 rows:")
+print(df.head())
+print("\nColumn names and types:")
+print(df.dtypes)
+
+# Remove rows with missing values in key columns
+# This ensures clean data for analysis
+df = df.dropna(subset=['age', 'response_time'])
+print(f"\nAfter removing missing values: {len(df)} participants")
+
+# =============================================================================
+# STEP 3: Create Visualization
+# =============================================================================
+
+# Create figure with publication-ready dimensions
+# 8x6 inches is standard for journals, 300 DPI ensures print quality
+plt.figure(figsize=(8, 6), dpi=300)
+
+# Create scatter plot
+# - x-axis: participant age
+# - y-axis: response time
+# - alpha=0.6: semi-transparent to show overlapping points
+# - s=50: point size (increase for emphasis, decrease if crowded)
+# - color='steelblue': professional blue color (try 'coral', 'forestgreen', etc.)
+plt.scatter(df['age'], df['response_time'],
+           alpha=0.6, s=50, color='steelblue', edgecolors='navy')
+
+# =============================================================================
+# STEP 4: Add Professional Elements
+# =============================================================================
+
+# Add descriptive axis labels with units
+# Always include units in parentheses for clarity
+plt.xlabel('Participant Age (years)', fontsize=12, fontweight='bold')
+plt.ylabel('Response Time (seconds)', fontsize=12, fontweight='bold')
+
+# Add informative title
+# Keep titles concise but descriptive
+plt.title('Response Time by Participant Age', fontsize=14, fontweight='bold', pad=20)
+
+# Add subtle grid for easier reading
+# alpha=0.3 makes gridlines subtle, not distracting
+plt.grid(True, alpha=0.3, linestyle='--', linewidth=0.5)
+
+# Optional: Add trend line to show correlation
+# Uncomment the following lines to add a linear regression line:
+# z = np.polyfit(df['age'], df['response_time'], 1)
+# p = np.poly1d(z)
+# plt.plot(df['age'], p(df['age']), "r--", alpha=0.8, label='Trend line')
+# plt.legend(fontsize=10)
+
+# =============================================================================
+# STEP 5: Finalize and Save
+# =============================================================================
+
+# Apply tight layout to prevent label cutoff
+# This automatically adjusts spacing to fit all elements
+plt.tight_layout()
+
+# Save as PNG (high resolution for papers/presentations)
+output_png = 'outputs/interview-study/png/age_vs_response.png'
+plt.savefig(output_png, dpi=300, bbox_inches='tight', facecolor='white')
+print(f"\nSaved PNG: {output_png}")
+
+# Save as PDF (vector format, infinitely scalable)
+output_pdf = 'outputs/interview-study/pdf/age_vs_response.pdf'
+plt.savefig(output_pdf, bbox_inches='tight', facecolor='white')
+print(f"Saved PDF: {output_pdf}")
+
+# Close the plot to free memory
+# Important when generating multiple plots in sequence
+plt.close()
+
+print("\n✓ Graph created successfully!")
+print("\nNext steps:")
+print("1. Review the graph to ensure it meets your needs")
+print("2. Adjust colors, sizes, or labels by editing this script")
+print("3. Run this script again after making changes")
+```
+
+**When Writing Comments:**
+- ✓ Explain WHY choices are made, not just WHAT the code does
+- ✓ Provide alternative values users can try
+- ✓ Include units and context
+- ✓ Add educational notes about pandas/matplotlib concepts
+- ✓ Suggest customization options
+- ✓ Help users debug with informative print statements
+- ✗ Don't state the obvious (e.g., "# import pandas" is not helpful)
+- ✗ Don't assume users know technical jargon - explain it
+
+**Remember:** These scripts are learning tools. A well-commented script helps users:
+- Understand how their data was processed
+- Modify the visualization for their specific needs
+- Learn Python and data visualization best practices
+- Build confidence to create their own scripts
+
 ### Data Privacy Protection
 
 **Critical:** Excel files (except `example_template.xlsx`) must NEVER be committed to git.
@@ -183,13 +755,49 @@ The **primary way users interact** with this tool is through Claude Code using n
 
 When implementing features or helping users, prioritize the natural language workflow over direct CLI usage.
 
+### Custom Slash Commands
+
+This project includes custom Claude Code slash commands to streamline common workflows:
+
+#### `/pro-graph` - Professional Publication-Ready Graphs
+
+**Purpose:** Generate publication-quality visualizations with all required professional elements.
+
+**What it does:**
+- Guides the creation of graphs meeting academic publication standards
+- Ensures all mandatory elements are included (axis labels, legends, colorbars)
+- Suggests multiple title options for the user to choose from
+- Drafts publication-ready figure captions
+- Applies professional styling (300 DPI, readable fonts, proper sizing)
+- Saves to the appropriate project output directory
+
+**When to use:**
+- User asks for any graph/visualization from their data
+- User mentions "publication", "paper", "article", or "thesis"
+- User wants a "professional" or "good-looking" graph
+- You're creating any visualization (always prefer professional standards)
+
+**Example usage:**
+```
+User: "Create a scatter plot of age vs response time from my data"
+Claude: [Invokes /pro-graph slash command]
+```
+
+The command will guide you through creating a professional graph with proper labels, titles, and styling.
+
 ## Important Implementation Notes
 
 ### When Creating Visualizations
-1. Always check if the data contains the required columns
-2. Handle missing data gracefully with clear error messages
-3. Support both French and English column names when reasonable
-4. Auto-detect project context from file paths to organize outputs properly
+1. **ALWAYS follow Professional Visualization Standards** (see section above)
+   - Include axis labels with units
+   - Add colorbar labels when applicable
+   - Create meaningful legends
+   - Suggest publication-ready titles and captions to the user
+2. Check if the data contains the required columns
+3. Handle missing data gracefully with clear error messages
+4. Support both French and English column names when reasonable
+5. Auto-detect project context from file paths to organize outputs properly
+6. Consider using the `/pro-graph` slash command for guided professional graph creation
 
 ### When Adding CLI Commands
 1. Update both `cli.py` and the README.md
