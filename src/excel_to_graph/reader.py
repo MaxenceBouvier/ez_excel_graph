@@ -79,7 +79,9 @@ class ExcelReader:
                 self.load_all_sheets()
             sheet_name = self.sheet_names[0]
 
-        df = self.workbook_data.get(sheet_name) or self.load_sheet(sheet_name)
+        df = self.workbook_data.get(sheet_name)
+        if df is None:
+            df = self.load_sheet(sheet_name)
 
         if normalize_columns:
             # Normalize column names (lowercase, strip whitespace)
@@ -109,7 +111,9 @@ class ExcelReader:
                 self.load_all_sheets()
             sheet_name = self.sheet_names[0]
 
-        df = self.workbook_data.get(sheet_name) or self.load_sheet(sheet_name)
+        df = self.workbook_data.get(sheet_name)
+        if df is None:
+            df = self.load_sheet(sheet_name)
 
         # Normalize column names (lowercase, strip whitespace)
         df.columns = df.columns.str.strip().str.lower()

@@ -27,6 +27,7 @@ dependencies = [
     "plotly>=5.18.0",
     "kaleido>=0.2.1",  # For PDF export from plotly
     "seaborn>=0.13.0",  # Statistical data visualization
+    "scipy>=1.11.0",  # Statistical analysis functions
     "dash>=2.14.0",  # Interactive web-based dashboards
     "python-dateutil>=2.8.0",
 ]

@@ -48,7 +48,7 @@ pytest tests/ -v
 pytest tests/ -v --cov=src/excel_to_graph --cov-report=term-missing
 
 # Smoke test - verify imports work
-python -c "from excel_to_graph import ExcelReader, GraphVisualizer; print('✓ Imports OK')"
+python -c "from excel_to_graph import ExcelReader, GraphVisualizer, StatisticalAnalyzer; print('✓ Imports OK')"
 ```
 
 ### CLI Usage
@@ -64,6 +64,12 @@ excel-to-graph convert resources/my-project/
 
 # List all projects
 excel-to-graph list
+
+# Perform statistical analysis (designed for use with Claude Code)
+excel-to-graph analyze resources/my-project/data.xlsx
+
+# Quick descriptive statistics
+excel-to-graph analyze resources/my-project/data.csv --describe
 
 # See all CLI options
 excel-to-graph --help
@@ -104,10 +110,11 @@ scripts/
 ### Core Modules
 
 #### `cli.py` - Command-Line Interface
-Entry point for the `excel-to-graph` command. Provides three main commands:
+Entry point for the `excel-to-graph` command. Provides main commands:
 - `init <project_name>` - Create new project structure
 - `convert <path>` - Convert Excel → CSV
 - `list` - Show all projects
+- `analyze <file>` - Perform statistical analysis (ANOVA, correlations, t-tests, etc.)
 - `visualize` - Legacy direct visualization command
 
 #### `reader.py` - Excel Data Loading
@@ -131,6 +138,19 @@ Converts Excel files to CSV format so Claude can more easily inspect data conten
 **Output Formats:** PNG, PDF (via matplotlib), HTML (interactive via plotly)
 
 **Font Support:** Uses DejaVu Sans for international character rendering (é, è, à, etc.)
+
+#### `analyzer.py` - Statistical Analysis
+`StatisticalAnalyzer` class provides advanced statistical tests for social science research:
+- **Descriptive statistics:** Mean, std, quartiles for numeric columns
+- **Correlation analysis:** Pearson and Spearman correlations with p-values and heatmaps
+- **t-tests:** Independent samples t-tests between two groups
+- **ANOVA:** One-way ANOVA with optional post-hoc pairwise comparisons (Bonferroni correction)
+- **Chi-square tests:** Test independence between categorical variables
+- **Normality tests:** Shapiro-Wilk test to check distribution assumptions
+
+**Output Organization:** Saves reports to `outputs/<project>/analyses/reports/` and plots to `outputs/<project>/analyses/plots/`
+
+**Font Support:** Uses DejaVu Sans for international character rendering
 
 #### `utils.py` - Helper Functions
 Utilities for:
@@ -746,11 +766,25 @@ GitHub Actions workflow (`.github/workflows/ci.yml`) runs on push/PR to main/dev
 
 The **primary way users interact** with this tool is through Claude Code using natural language prompts. Example prompts:
 
+**Data exploration and conversion:**
 ```
 "Show me the structure of my Excel data in resources/"
 "Convert all Excel files in resources/interview-study/ to CSV"
+```
+
+**Visualization:**
+```
 "Create a bar chart comparing column A across all rows"
 "Generate a scatter plot of age vs response_time"
+```
+
+**Statistical analysis:**
+```
+"Run a correlation analysis on all numeric variables in my data"
+"Perform an ANOVA comparing response times across different groups"
+"Do a t-test between treatment and control groups"
+"Test if my age variable follows a normal distribution"
+"Check for statistical relationships between gender and outcome using chi-square"
 ```
 
 When implementing features or helping users, prioritize the natural language workflow over direct CLI usage.
@@ -798,6 +832,15 @@ The command will guide you through creating a professional graph with proper lab
 4. Support both French and English column names when reasonable
 5. Auto-detect project context from file paths to organize outputs properly
 6. Consider using the `/pro-graph` slash command for guided professional graph creation
+
+### When Performing Statistical Analysis
+1. Always check data assumptions (normality, sample size) before running tests
+2. Report both the test statistic and p-value for transparency
+3. Provide clear interpretation of results for non-statistical users
+4. Save both numerical reports and visual outputs (correlation heatmaps, etc.)
+5. Auto-detect project context to organize analysis outputs properly
+6. Handle missing data appropriately (report removed observations)
+7. Use appropriate corrections for multiple comparisons (e.g., Bonferroni for post-hoc tests)
 
 ### When Adding CLI Commands
 1. Update both `cli.py` and the README.md
