@@ -37,7 +37,7 @@
       "Bash(rm:*)",
       "Bash(mv:*)",
       "Bash(cp:*)",
-      "Read(/home/YOUR_USERNAME/proj/excel_to_graph/**)"
+      "Read(/home/YOUR_USERNAME/proj/ez_excel_graph/**)"
     ],
     "deny": [],
     "ask": []

@@ -148,7 +148,7 @@ Après que le script d'installation se termine, vous **DEVEZ** redémarrer votre
 2. **Ouvrez un nouveau terminal Ubuntu**
 3. **Retournez au projet :**
    ```bash
-   cd ~/proj/excel_to_graph
+   cd ~/proj/ez_excel_graph
    ```
 
 **Pourquoi ?** Le script d'installation installe de nouveaux programmes (`claude` et `uv`), mais votre session de terminal actuelle ne les connaît pas encore. Redémarrer le terminal corrige cela.
@@ -162,7 +162,7 @@ Si vous avez vu des erreurs comme `uv: command not found` ou `Virtual environmen
 1. **Redémarrez votre terminal** (fermez et rouvrez Ubuntu)
 2. **Retournez au projet :**
    ```bash
-   cd ~/proj/excel_to_graph
+   cd ~/proj/ez_excel_graph
    ```
 3. **Complétez l'installation Python :**
    ```bash
@@ -242,11 +242,11 @@ Claude Code vous invitera généralement à vous connecter automatiquement au pr
    pwd
    ```
 
-   Cela devrait retourner : `/home/votre-nom-utilisateur/proj/excel_to_graph`
+   Cela devrait retourner : `/home/votre-nom-utilisateur/proj/ez_excel_graph`
 
    Si ce n'est pas le cas, naviguez vers le projet :
    ```bash
-   cd ~/proj/excel_to_graph
+   cd ~/proj/ez_excel_graph
    ```
 
 6. **Ouvrir VSCode connecté à WSL :**
@@ -514,7 +514,7 @@ notepad.exe nomfichier.txt
 2. **Ouvrez un nouveau terminal Ubuntu**
 3. **Réessayez :**
    ```bash
-   cd ~/proj/excel_to_graph
+   cd ~/proj/ez_excel_graph
    claude --help
    ```
 
@@ -531,7 +531,7 @@ Si le script d'installation a affiché cette erreur, cela signifie que l'environ
 1. **Redémarrez votre terminal** (fermez et rouvrez)
 2. **Retournez au projet :**
    ```bash
-   cd ~/proj/excel_to_graph
+   cd ~/proj/ez_excel_graph
    ```
 3. **Exécutez l'installation Python :**
    ```bash
@@ -601,7 +601,7 @@ VSCode doit être installé sur **Windows**, pas dans WSL :
 2. **Vérifiez que vous êtes dans le bon répertoire :**
    ```bash
    pwd
-   # Devrait afficher : /home/votre-nom-utilisateur/proj/excel_to_graph
+   # Devrait afficher : /home/votre-nom-utilisateur/proj/ez_excel_graph
    ```
 3. **Vérifiez que l'environnement Python existe :**
    ```bash
