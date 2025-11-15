@@ -116,11 +116,16 @@ class StatisticalAnalyzer:
         for i, col1 in enumerate(subset.columns):
             for j, col2 in enumerate(subset.columns):
                 if i != j:
-                    if method == "pearson":
-                        _, p = pearsonr(subset[col1].dropna(), subset[col2].dropna())
+                    # Drop NaN values jointly to keep arrays aligned
+                    valid_data = subset[[col1, col2]].dropna()
+                    if len(valid_data) > 2:  # Need at least 3 points for correlation
+                        if method == "pearson":
+                            _, p = pearsonr(valid_data[col1], valid_data[col2])
+                        else:
+                            _, p = spearmanr(valid_data[col1], valid_data[col2])
+                        p_values.iloc[i, j] = p
                     else:
-                        _, p = spearmanr(subset[col1].dropna(), subset[col2].dropna())
-                    p_values.iloc[i, j] = p
+                        p_values.iloc[i, j] = np.nan
 
         # Create heatmap
         if save_plot:

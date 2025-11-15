@@ -119,7 +119,7 @@ def cmd_analyze(args):
         # Detect project and determine output directory
         project_name = detect_project_from_path(str(input_path))
         if project_name and args.output == "outputs/analyses":  # Using default
-            output_dir = get_output_dir_for_project(project_name) / "analyses"
+            output_dir = Path(get_output_dir_for_project(project_name)) / "analyses"
             print(f"Detected project: {project_name}")
             print(f"Analysis outputs will be saved to: {output_dir}")
         else:
