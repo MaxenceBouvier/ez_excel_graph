@@ -9,6 +9,7 @@ __version__ = "0.1.0"
 
 from excel_to_graph.reader import ExcelReader
 from excel_to_graph.visualizer import GraphVisualizer
+from excel_to_graph.analyzer import StatisticalAnalyzer
 from excel_to_graph.converter import convert_excel_to_csv, convert_directory
 from excel_to_graph.utils import (
     setup_output_dir,
@@ -23,6 +24,7 @@ from excel_to_graph.utils import (
 __all__ = [
     "ExcelReader",
     "GraphVisualizer",
+    "StatisticalAnalyzer",
     "convert_excel_to_csv",
     "convert_directory",
     "setup_output_dir",

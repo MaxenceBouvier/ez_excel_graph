@@ -33,6 +33,7 @@ This project helps social science researchers visualize data from Excel spreadsh
 ## 🎯 Features
 
 - 📊 Flexible visualization: Bar charts, Line plots, Scatter plots, Heatmaps, and more
+- 📈 Advanced statistical analysis: ANOVA, correlations, t-tests, chi-square, normality tests
 - 📁 Project-based organization: Manage multiple research projects separately
 - 🔄 Excel to CSV conversion: Easy data inspection for Claude
 - 🇫🇷 Full support for international text (French accents: é, è, à, ô, etc.)
@@ -408,11 +409,16 @@ claude
 ```
 
 #### Example Prompts (English):
+
+**Data exploration:**
 ```
 "Show me the structure of my Excel data in resources/"
 
 "Convert all Excel files in resources/interview-study/ to CSV"
+```
 
+**Visualizations:**
+```
 "Create a bar chart comparing column A values across all rows"
 
 "Generate a scatter plot of age vs response_time from survey_data.xlsx"
@@ -422,17 +428,52 @@ claude
 "Save all visualizations as PDF in outputs/my-project/"
 ```
 
+**Statistical analysis:**
+```
+"Run a correlation analysis on all numeric variables in my survey data"
+
+"Perform an ANOVA to compare response times across different treatment groups"
+
+"Do a t-test between control and treatment groups for the outcome variable"
+
+"Test if my age variable follows a normal distribution"
+
+"Check for relationships between gender and outcome using chi-square test"
+
+"Generate descriptive statistics for all numeric columns"
+```
+
 #### Example Prompts (French / Français):
+
+**Exploration des données:**
 ```
 "Montre-moi la structure de mes données Excel dans resources/"
 
 "Convertis tous les fichiers Excel de resources/etude-interviews/ en CSV"
+```
 
+**Visualisations:**
+```
 "Crée un graphique en barres comparant les valeurs de la colonne A"
 
 "Génère un nuage de points âge vs temps_réponse depuis sondage.xlsx"
 
 "Crée une visualisation HTML interactive que je peux explorer"
+```
+
+**Analyses statistiques:**
+```
+"Lance une analyse de corrélation sur toutes les variables numériques"
+
+"Effectue une ANOVA pour comparer les temps de réponse entre groupes"
+
+"Fais un test t entre les groupes contrôle et traitement"
+
+"Teste si ma variable âge suit une distribution normale"
+
+"Vérifie les relations entre genre et résultat avec un test du chi-carré"
+
+"Génère des statistiques descriptives pour toutes les colonnes numériques"
 ```
 
 **💡 Pro Tip:** Whether using VSCode or terminal, you can ask Claude to explain anything in the project. Claude has full context of the codebase and can help troubleshoot, suggest improvements, and guide you through complex tasks!
@@ -454,10 +495,17 @@ excel-to-graph convert resources/my-project/
 # List all projects
 excel-to-graph list
 
+# Perform statistical analysis (best used with Claude Code for interactive analysis)
+excel-to-graph analyze resources/my-project/data.xlsx
+
+# Quick descriptive statistics
+excel-to-graph analyze resources/my-project/data.csv --describe
+
 # See all options
 excel-to-graph --help
 excel-to-graph init --help
 excel-to-graph convert --help
+excel-to-graph analyze --help
 ```
 
 ## 📂 Project Structure
@@ -473,11 +521,17 @@ excel_to_graph/
 │   │   ├── data.xlsx
 │   │   └── data_Sheet1.csv      # Auto-generated CSV
 │   └── project-2/
-├── outputs/                      # Generated graphs (auto-created)
+├── outputs/                      # Generated outputs (auto-created)
 │   ├── png/                     # PNG images
 │   ├── pdf/                     # PDF files
 │   ├── html/                    # Interactive HTML
 │   ├── project-1/               # Project-specific outputs
+│   │   ├── png/                # Visualizations
+│   │   ├── pdf/
+│   │   ├── html/
+│   │   └── analyses/           # Statistical analysis results
+│   │       ├── reports/        # Text reports
+│   │       └── plots/          # Analysis plots
 │   └── project-2/
 ├── scripts/                      # Setup & project scripts
 │   ├── setup_all.sh             # Main setup script
