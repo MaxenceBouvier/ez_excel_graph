@@ -286,6 +286,150 @@ if __name__ == '__main__':
 
 **Note:** All libraries work well with pandas DataFrames, making it easy to visualize Excel data after conversion.
 
+### Professional Visualization Standards
+
+**CRITICAL:** All visualizations created for users must meet academic/research publication standards. Always strive to make graphs both visually appealing AND professionally presentable.
+
+#### Required Elements for Every Graph
+
+**1. Axis Labels (MANDATORY)**
+- Every x-axis and y-axis MUST have a descriptive label with units if applicable
+- Labels should be clear and meaningful (not just column names)
+- Use proper capitalization and formatting
+
+```python
+# Matplotlib/Seaborn
+plt.xlabel('Time (minutes)', fontsize=12)
+plt.ylabel('Response Rate (%)', fontsize=12)
+
+# Plotly
+fig.update_xaxes(title_text='Time (minutes)')
+fig.update_yaxes(title_text='Response Rate (%)')
+```
+
+**2. Colorbar Labels (when applicable)**
+- If a heatmap or color-coded plot has a colorbar, it MUST be labeled
+- Indicate what the color scale represents with units
+
+```python
+# Matplotlib/Seaborn heatmap
+sns.heatmap(data, cbar_kws={'label': 'Correlation Coefficient'})
+
+# Plotly
+fig.update_layout(coloraxis_colorbar=dict(title='Frequency'))
+```
+
+**3. Meaningful Legends**
+- Include legends when multiple data series are plotted
+- Use descriptive labels, not just variable names
+- Position legends to avoid obscuring data
+
+```python
+# Matplotlib
+plt.legend(['Control Group', 'Treatment Group'], loc='best')
+
+# Plotly
+fig.update_traces(name='Control Group', selector=dict(type='scatter'))
+```
+
+**4. Graph Titles and Descriptions**
+- ALWAYS suggest a descriptive title to the user
+- Titles should be publication-ready (clear, concise, informative)
+- Offer to help refine the title for their specific research context
+
+```python
+# Good title suggestion workflow:
+# 1. Generate graph with a descriptive working title
+# 2. Suggest 2-3 alternative titles to the user
+# 3. Explain what the graph shows in 1-2 sentences (for figure caption)
+```
+
+#### Professional Styling Checklist
+
+When creating ANY visualization, ensure:
+
+- ✓ **Clear axis labels** with units (e.g., "Age (years)", "Temperature (°C)")
+- ✓ **Readable font sizes** (minimum 10-12pt for publication)
+- ✓ **Appropriate figure size** (not too small, not too large)
+- ✓ **High DPI for static images** (minimum 300 DPI for publications)
+- ✓ **Color schemes** that are colorblind-friendly when possible
+- ✓ **Grid lines** (if they improve readability)
+- ✓ **No overlapping text** or cluttered elements
+- ✓ **Consistent styling** across all graphs in a project
+
+#### Example: Professional vs Basic Graph
+
+**Basic (AVOID):**
+```python
+plt.scatter(df['col1'], df['col2'])
+plt.savefig('output.png')
+```
+
+**Professional (ALWAYS DO):**
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Set professional style
+sns.set_style("whitegrid")
+plt.figure(figsize=(8, 6), dpi=300)
+
+# Create plot
+plt.scatter(df['age'], df['response_time'], alpha=0.6, s=50)
+
+# Add professional elements
+plt.xlabel('Participant Age (years)', fontsize=12)
+plt.ylabel('Response Time (seconds)', fontsize=12)
+plt.title('Response Time by Participant Age', fontsize=14, fontweight='bold')
+plt.grid(True, alpha=0.3)
+
+# Save with high quality
+plt.tight_layout()
+plt.savefig('outputs/project/png/age_vs_response.png', dpi=300, bbox_inches='tight')
+plt.close()
+```
+
+#### Suggesting Titles to Users
+
+After creating a graph, ALWAYS:
+
+1. **Propose a title** based on what the graph shows
+2. **Offer alternatives** (e.g., "Would you prefer 'Distribution of Interview Durations' or 'Interview Length Across Participants'?")
+3. **Suggest a caption** (e.g., "Figure caption: Scatter plot showing the relationship between participant age and response time (n=45). Pearson correlation r=0.67, p<0.001.")
+4. **Ask about context** (e.g., "Is this for a specific section of your paper? I can tailor the title accordingly.")
+
+#### Helper Function Template
+
+When creating visualizations, consider using this template:
+
+```python
+def create_professional_plot(data, x_col, y_col, plot_type='scatter',
+                            title=None, x_label=None, y_label=None,
+                            output_path=None):
+    """Create a publication-ready plot with all professional elements."""
+
+    plt.figure(figsize=(8, 6), dpi=300)
+
+    if plot_type == 'scatter':
+        plt.scatter(data[x_col], data[y_col], alpha=0.6)
+    elif plot_type == 'line':
+        plt.plot(data[x_col], data[y_col], linewidth=2)
+    # ... other plot types
+
+    # Professional elements
+    plt.xlabel(x_label or x_col, fontsize=12)
+    plt.ylabel(y_label or y_col, fontsize=12)
+    if title:
+        plt.title(title, fontsize=14, fontweight='bold')
+    plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+
+    if output_path:
+        plt.savefig(output_path, dpi=300, bbox_inches='tight')
+
+    return plt.gcf()
+```
+
 ### Data Privacy Protection
 
 **Critical:** Excel files (except `example_template.xlsx`) must NEVER be committed to git.
@@ -329,13 +473,49 @@ The **primary way users interact** with this tool is through Claude Code using n
 
 When implementing features or helping users, prioritize the natural language workflow over direct CLI usage.
 
+### Custom Slash Commands
+
+This project includes custom Claude Code slash commands to streamline common workflows:
+
+#### `/pro-graph` - Professional Publication-Ready Graphs
+
+**Purpose:** Generate publication-quality visualizations with all required professional elements.
+
+**What it does:**
+- Guides the creation of graphs meeting academic publication standards
+- Ensures all mandatory elements are included (axis labels, legends, colorbars)
+- Suggests multiple title options for the user to choose from
+- Drafts publication-ready figure captions
+- Applies professional styling (300 DPI, readable fonts, proper sizing)
+- Saves to the appropriate project output directory
+
+**When to use:**
+- User asks for any graph/visualization from their data
+- User mentions "publication", "paper", "article", or "thesis"
+- User wants a "professional" or "good-looking" graph
+- You're creating any visualization (always prefer professional standards)
+
+**Example usage:**
+```
+User: "Create a scatter plot of age vs response time from my data"
+Claude: [Invokes /pro-graph slash command]
+```
+
+The command will guide you through creating a professional graph with proper labels, titles, and styling.
+
 ## Important Implementation Notes
 
 ### When Creating Visualizations
-1. Always check if the data contains the required columns
-2. Handle missing data gracefully with clear error messages
-3. Support both French and English column names when reasonable
-4. Auto-detect project context from file paths to organize outputs properly
+1. **ALWAYS follow Professional Visualization Standards** (see section above)
+   - Include axis labels with units
+   - Add colorbar labels when applicable
+   - Create meaningful legends
+   - Suggest publication-ready titles and captions to the user
+2. Check if the data contains the required columns
+3. Handle missing data gracefully with clear error messages
+4. Support both French and English column names when reasonable
+5. Auto-detect project context from file paths to organize outputs properly
+6. Consider using the `/pro-graph` slash command for guided professional graph creation
 
 ### When Adding CLI Commands
 1. Update both `cli.py` and the README.md

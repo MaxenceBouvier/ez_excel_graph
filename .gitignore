@@ -49,8 +49,9 @@ env/
 *~
 .DS_Store
 
-# Claude Code
-.claude/
+# Claude Code (ignore settings but keep slash commands)
+.claude/*
+!.claude/commands/
 
 # Output files (generated graphs)
 outputs/
