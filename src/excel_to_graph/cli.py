@@ -143,8 +143,10 @@ def cmd_analyze(args):
 
         # Show basic info
         print(f"  - {len(df)} rows")
-        print(f"  - {len(df.columns)} columns: {', '.join(df.columns[:5])}"
-              f"{'...' if len(df.columns) > 5 else ''}")
+        print(
+            f"  - {len(df.columns)} columns: {', '.join(df.columns[:5])}"
+            f"{'...' if len(df.columns) > 5 else ''}"
+        )
         print()
 
         # Create analyzer
@@ -174,9 +176,7 @@ def cmd_analyze(args):
             print("Running descriptive statistics...")
             stats = analyzer.describe()
             report_path = analyzer.save_report(
-                stats,
-                f"descriptive_stats_{input_path.stem}",
-                "Descriptive Statistics"
+                stats, f"descriptive_stats_{input_path.stem}", "Descriptive Statistics"
             )
             print(f"✓ Report saved: {report_path}")
 
@@ -185,6 +185,7 @@ def cmd_analyze(args):
     except Exception as e:
         print(f"Error: {e}", file=sys.stderr)
         import traceback
+
         traceback.print_exc()
         return 1
 

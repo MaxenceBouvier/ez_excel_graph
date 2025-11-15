@@ -109,9 +109,9 @@ class StatisticalAnalyzer:
             raise ValueError(f"Unknown correlation method: {method}")
 
         # Calculate p-values
-        n = len(subset)
-        p_values = pd.DataFrame(np.zeros_like(corr_matrix), columns=corr_matrix.columns,
-                                index=corr_matrix.index)
+        p_values = pd.DataFrame(
+            np.zeros_like(corr_matrix), columns=corr_matrix.columns, index=corr_matrix.index
+        )
 
         for i, col1 in enumerate(subset.columns):
             for j, col2 in enumerate(subset.columns):
@@ -206,9 +206,7 @@ class StatisticalAnalyzer:
             "normality_group2_p": float(p_norm2) if p_norm2 else None,
         }
 
-    def anova(
-        self, group_column: str, value_column: str, posthoc: bool = False
-    ) -> dict[str, Any]:
+    def anova(self, group_column: str, value_column: str, posthoc: bool = False) -> dict[str, Any]:
         """
         Perform one-way ANOVA to compare means across multiple groups.
 
@@ -227,8 +225,7 @@ class StatisticalAnalyzer:
 
         # Prepare data for each group
         group_data = [
-            self.data[self.data[group_column] == group][value_column].dropna()
-            for group in groups
+            self.data[self.data[group_column] == group][value_column].dropna() for group in groups
         ]
 
         # Perform one-way ANOVA
@@ -236,10 +233,10 @@ class StatisticalAnalyzer:
 
         result = {
             "groups": [str(g) for g in groups],
-            "group_means": {str(groups[i]): float(data.mean())
-                            for i, data in enumerate(group_data)},
-            "group_stds": {str(groups[i]): float(data.std())
-                           for i, data in enumerate(group_data)},
+            "group_means": {
+                str(groups[i]): float(data.mean()) for i, data in enumerate(group_data)
+            },
+            "group_stds": {str(groups[i]): float(data.std()) for i, data in enumerate(group_data)},
             "group_ns": {str(groups[i]): int(len(data)) for i, data in enumerate(group_data)},
             "f_statistic": float(f_stat),
             "p_value": float(p_value),
@@ -253,7 +250,7 @@ class StatisticalAnalyzer:
             alpha_corrected = 0.05 / n_comparisons  # Bonferroni correction
 
             for i, group1 in enumerate(groups):
-                for group2 in groups[i + 1:]:
+                for group2 in groups[i + 1 :]:
                     data1 = self.data[self.data[group_column] == group1][value_column].dropna()
                     data2 = self.data[self.data[group_column] == group2][value_column].dropna()
                     t_stat, p_val = stats.ttest_ind(data1, data2)
@@ -295,9 +292,9 @@ class StatisticalAnalyzer:
             "p_value": float(p_value),
             "degrees_of_freedom": int(dof),
             "significant_at_0.05": p_value < 0.05,
-            "expected_frequencies": pd.DataFrame(expected,
-                                                  index=contingency.index,
-                                                  columns=contingency.columns).to_dict(),
+            "expected_frequencies": pd.DataFrame(
+                expected, index=contingency.index, columns=contingency.columns
+            ).to_dict(),
         }
 
     def normality_test(self, column: str) -> dict[str, Any]:
