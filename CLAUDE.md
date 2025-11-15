@@ -140,6 +140,152 @@ Utilities for:
 - **Output organization:** Auto-organizes outputs by project and file type
 - **Filename sanitization:** Ensures filesystem-safe names
 
+### Available Graphic Libraries
+
+This project includes several powerful visualization libraries to create a wide variety of charts and graphs:
+
+#### Matplotlib (>=3.8.0)
+**Purpose:** Core static plotting library for Python
+**Best for:**
+- Static publication-quality figures (PNG, PDF)
+- Fine-grained control over every plot element
+- Traditional chart types: line plots, scatter plots, histograms, bar charts
+
+**Example use cases:**
+```python
+import matplotlib.pyplot as plt
+
+# Simple line plot
+plt.plot(x, y)
+plt.savefig('output.png')
+
+# Bar chart with custom styling
+fig, ax = plt.subplots()
+ax.bar(categories, values)
+ax.set_title('My Chart')
+plt.savefig('output.pdf')
+```
+
+#### Plotly (>=5.18.0)
+**Purpose:** Interactive web-based visualizations
+**Best for:**
+- Interactive HTML charts with zoom, pan, hover tooltips
+- 3D visualizations
+- Dashboards and web applications
+- Sharing visualizations that users can explore
+
+**Key features:**
+- Export to HTML for standalone interactive charts
+- Export to static images via Kaleido (PNG, PDF)
+- Built-in templates and themes
+
+**Example use cases:**
+```python
+import plotly.express as px
+import plotly.graph_objects as go
+
+# Quick interactive scatter plot
+fig = px.scatter(df, x='age', y='response_time')
+fig.write_html('outputs/project/html/scatter.html')
+
+# Custom interactive timeline
+fig = go.Figure(data=[go.Scatter(x=dates, y=values)])
+fig.update_layout(title='Timeline')
+fig.write_html('outputs/project/html/timeline.html')
+```
+
+#### Seaborn (>=0.13.0)
+**Purpose:** Statistical data visualization built on matplotlib
+**Best for:**
+- Statistical plots: distributions, regressions, correlations
+- Beautiful default styles and color palettes
+- Multi-plot grids (FacetGrid, PairGrid)
+- Heatmaps and cluster maps
+
+**Key features:**
+- Integrates seamlessly with pandas DataFrames
+- Automatic computation of statistical aggregates
+- Attractive default themes
+
+**Example use cases:**
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Distribution plot with multiple variables
+sns.histplot(data=df, x='age', hue='category')
+plt.savefig('outputs/project/png/distribution.png')
+
+# Correlation heatmap
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.savefig('outputs/project/png/correlation.png')
+
+# Box plot for statistical comparison
+sns.boxplot(data=df, x='group', y='score')
+plt.savefig('outputs/project/png/boxplot.png')
+```
+
+#### Dash (>=2.14.0)
+**Purpose:** Framework for building interactive web-based dashboards
+**Best for:**
+- Multi-page analytical dashboards
+- Real-time data monitoring
+- Interactive data exploration tools
+- Web applications with complex user interactions
+
+**Key features:**
+- Built on top of Plotly for interactive charts
+- Reactive callbacks for interactivity
+- Professional-looking layouts without HTML/CSS knowledge
+- Can be deployed as standalone web apps
+
+**Example use cases:**
+```python
+from dash import Dash, dcc, html, Input, Output
+import plotly.express as px
+
+# Simple interactive dashboard
+app = Dash(__name__)
+app.layout = html.Div([
+    dcc.Dropdown(id='dropdown', options=['Option A', 'Option B']),
+    dcc.Graph(id='graph')
+])
+
+@app.callback(Output('graph', 'figure'), Input('dropdown', 'value'))
+def update_graph(selected_value):
+    # Update graph based on user selection
+    fig = px.bar(df[df['category'] == selected_value], x='x', y='y')
+    return fig
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
+```
+
+#### Choosing the Right Library
+
+**Use Matplotlib when:**
+- You need static publication-quality images
+- You want fine control over every visual element
+- You're creating traditional academic charts
+
+**Use Plotly when:**
+- Users need to interact with the visualization (zoom, pan, hover)
+- You want to create standalone HTML visualizations
+- You're building 3D visualizations
+
+**Use Seaborn when:**
+- You're doing statistical analysis and visualization
+- You want beautiful plots with minimal code
+- You're exploring correlations and distributions in your data
+
+**Use Dash when:**
+- You want to build a complete interactive dashboard
+- You need multiple linked visualizations
+- You want users to filter/explore data through dropdowns and controls
+- You're creating a data exploration tool
+
+**Note:** All libraries work well with pandas DataFrames, making it easy to visualize Excel data after conversion.
+
 ### Data Privacy Protection
 
 **Critical:** Excel files (except `example_template.xlsx`) must NEVER be committed to git.
