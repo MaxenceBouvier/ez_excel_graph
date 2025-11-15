@@ -202,8 +202,8 @@ class StatisticalAnalyzer:
             "t_statistic": float(t_stat),
             "p_value": float(p_value),
             "significant_at_0.05": p_value < 0.05,
-            "normality_group1_p": float(p_norm1) if p_norm1 else None,
-            "normality_group2_p": float(p_norm2) if p_norm2 else None,
+            "normality_group1_p": float(p_norm1) if p_norm1 is not None else None,
+            "normality_group2_p": float(p_norm2) if p_norm2 is not None else None,
         }
 
     def anova(self, group_column: str, value_column: str, posthoc: bool = False) -> dict[str, Any]:
