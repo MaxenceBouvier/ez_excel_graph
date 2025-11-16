@@ -14,8 +14,8 @@ Thank you for your interest in contributing! This document provides guidelines f
 
 1. **Clone the repository**
    ```bash
-   git clone git@github.com:MaxenceBouvier/ez_excel_graph.git
-   cd ez_excel_graph
+   git clone git@github.com:MaxenceBouvier/ez_excel_graph.git excel_to_graph
+   cd excel_to_graph
    ```
 
 2. **Run the setup scripts**
@@ -212,7 +212,7 @@ git commit --no-verify
 ## Project Structure
 
 ```
-ez_excel_graph/
+excel_to_graph/
 ├── .github/workflows/    # CI/CD configurations
 ├── scripts/              # Setup and utility scripts
 ├── src/excel_to_graph/   # Main package code
