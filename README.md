@@ -20,6 +20,7 @@ This project helps social science researchers visualize data from Excel spreadsh
   - [Step 5: Authenticate Claude Code](#step-5-authenticate-claude-code)
   - [Step 6: Open in VSCode (Highly Recommended!)](#step-6-open-in-vscode-highly-recommended)
   - [Step 7: Setup GitHub Authentication (Optional)](#step-7-setup-github-authentication-optional)
+  - [Step 8: Setup Automatic Update Checks (Optional)](#step-8-setup-automatic-update-checks-optional)
 - [📊 Using the Tool](#-using-the-tool)
   - [Working with Your Excel Data](#working-with-your-excel-data)
   - [Generating Graphs with Claude Code](#generating-graphs-with-claude-code)
@@ -135,7 +136,7 @@ This script will:
 4. ✅ Set up Python environment with uv
 5. ✅ Check VSCode integration
 6. ✅ Install the project package
-7. ✅ Create a working branch for you
+7. ✅ Optionally set up daily update checks
 
 **Note:** The script may ask for confirmation at certain steps. Just press Enter to continue.
 
@@ -149,7 +150,7 @@ After the setup script finishes, you **MUST** restart your terminal for the new 
 2. **Open a new Ubuntu terminal**
 3. **Navigate back to the project:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 
 **Why?** The setup script installs new programs (`claude` and `uv`), but your current terminal session doesn't know about them yet. Restarting the terminal fixes this.
@@ -163,7 +164,7 @@ If you saw errors like `uv: command not found` or `Virtual environment not found
 1. **Restart your terminal** (close and reopen Ubuntu)
 2. **Navigate back:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 3. **Complete the Python setup:**
    ```bash
@@ -243,11 +244,11 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    pwd
    ```
 
-   This should return: `/home/your-username/proj/ez_excel_graph`
+   This should return: `/home/your-username/proj/excel_to_graph`
 
    If not, navigate to the project:
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 
 6. **Open VSCode connected to WSL:**
@@ -292,6 +293,55 @@ That's it! Now you can push changes without being prompted for credentials.
 - Push your changes: `git push`
 - Create pull requests: `gh pr create`
 - View issues: `gh issue list`
+
+### Step 8: Setup Automatic Update Checks (Optional)
+
+**Stay up-to-date with the latest features and bug fixes!**
+
+This project is actively maintained, and we regularly add new features and improvements. You can set up automatic daily checks to be notified when updates are available.
+
+**What does this do?**
+- Checks for repository updates once per day (9:00 AM)
+- Notifies you when new commits are available
+- **Does NOT auto-merge** - just lets you know updates exist
+- Safe: Only fetches updates, never modifies your local files
+- Works even with uncommitted changes
+
+**How to enable:**
+
+```bash
+# Run the setup script
+./scripts/setup_auto_update_check.sh
+```
+
+The script will:
+1. Configure a cron job to check daily
+2. Ask to start the cron service (required on WSL)
+3. Show you how to disable it later if needed
+
+**Manually check for updates anytime:**
+
+```bash
+./scripts/check_updates.sh
+```
+
+This will show you:
+- If your repository is up to date
+- How many commits behind you are
+- A summary of recent changes
+- Instructions to update with `git pull`
+
+**To disable automatic checks later:**
+
+```bash
+# Edit your crontab
+crontab -e
+
+# Remove the line containing 'check_updates.sh'
+# Save and exit
+```
+
+**WSL Note:** On WSL, the cron service needs to be running. The setup script will help you start it and can add it to auto-start when you open your terminal.
 
 ## 📊 Using the Tool
 
@@ -568,7 +618,7 @@ notepad.exe filename.txt
 2. **Open a new Ubuntu terminal**
 3. **Try again:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    claude --help
    ```
 
@@ -585,7 +635,7 @@ If the setup script showed this error, it means the Python environment wasn't cr
 1. **Restart your terminal** (close and reopen)
 2. **Navigate back:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 3. **Run the Python setup:**
    ```bash
@@ -655,7 +705,7 @@ VSCode needs to be installed on **Windows**, not in WSL:
 2. **Check you're in the right directory:**
    ```bash
    pwd
-   # Should show: /home/your-username/proj/ez_excel_graph
+   # Should show: /home/your-username/proj/excel_to_graph
    ```
 3. **Verify Python environment exists:**
    ```bash
