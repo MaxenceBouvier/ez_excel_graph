@@ -89,7 +89,8 @@ if crontab -l 2>/dev/null | grep -F "$CHECK_SCRIPT" > /dev/null; then
 fi
 
 # Add the cron job
-(crontab -l 2>/dev/null; echo "$CRON_JOB") | crontab -
+# Use || true to handle the case where user has no existing crontab
+(crontab -l 2>/dev/null || true; echo "$CRON_JOB") | crontab -
 
 echo -e "${GREEN}✓ Daily update check configured!${NC}"
 echo ""
