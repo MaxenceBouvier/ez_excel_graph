@@ -150,7 +150,7 @@ After the setup script finishes, you **MUST** restart your terminal for the new 
 2. **Open a new Ubuntu terminal**
 3. **Navigate back to the project:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 
 **Why?** The setup script installs new programs (`claude` and `uv`), but your current terminal session doesn't know about them yet. Restarting the terminal fixes this.
@@ -164,7 +164,7 @@ If you saw errors like `uv: command not found` or `Virtual environment not found
 1. **Restart your terminal** (close and reopen Ubuntu)
 2. **Navigate back:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 3. **Complete the Python setup:**
    ```bash
@@ -244,11 +244,11 @@ Claude Code will typically prompt you to log in automatically on first startup. 
    pwd
    ```
 
-   This should return: `/home/your-username/proj/ez_excel_graph`
+   This should return: `/home/your-username/proj/excel_to_graph`
 
    If not, navigate to the project:
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 
 6. **Open VSCode connected to WSL:**
@@ -618,7 +618,7 @@ notepad.exe filename.txt
 2. **Open a new Ubuntu terminal**
 3. **Try again:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    claude --help
    ```
 
@@ -635,7 +635,7 @@ If the setup script showed this error, it means the Python environment wasn't cr
 1. **Restart your terminal** (close and reopen)
 2. **Navigate back:**
    ```bash
-   cd ~/proj/ez_excel_graph
+   cd ~/proj/excel_to_graph
    ```
 3. **Run the Python setup:**
    ```bash
@@ -705,7 +705,7 @@ VSCode needs to be installed on **Windows**, not in WSL:
 2. **Check you're in the right directory:**
    ```bash
    pwd
-   # Should show: /home/your-username/proj/ez_excel_graph
+   # Should show: /home/your-username/proj/excel_to_graph
    ```
 3. **Verify Python environment exists:**
    ```bash
